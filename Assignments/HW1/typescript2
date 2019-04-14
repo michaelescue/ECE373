@@ -1,0 +1,40 @@
+Script started on 2019-04-14 00:27:23-0700
+]0;michael@michael-VirtualBox: ~/Documents/ECE373[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373[00m$ gcc - [Kg -[K[K[K[Khw1.c -g- [K[K -h[Ko c-to-f
+[01m[Khw1.c:[m[K In function ‘[01m[Kmain[m[K’:
+[01m[Khw1.c:19:5:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[Kprintf[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+     [01;35m[Kprintf[m[K("Enter degrees in Fahrenheit \"ff.f\": ");
+     [01;35m[K^~~~~~[m[K
+[01m[Khw1.c:19:5:[m[K [01;35m[Kwarning: [m[Kincompatible implicit declaration of built-in function ‘[01m[Kprintf[m[K’
+[01m[Khw1.c:19:5:[m[K [01;36m[Knote: [m[Kinclude ‘[01m[K<stdio.h>[m[K’ or provide a declaration of ‘[01m[Kprintf[m[K’
+[01m[Khw1.c:20:5:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[Kscanf[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+     [01;35m[Kscanf[m[K("%f", Fp);
+     [01;35m[K^~~~~[m[K
+[01m[Khw1.c:20:5:[m[K [01;35m[Kwarning: [m[Kincompatible implicit declaration of built-in function ‘[01m[Kscanf[m[K’
+[01m[Khw1.c:20:5:[m[K [01;36m[Knote: [m[Kinclude ‘[01m[K<stdio.h>[m[K’ or provide a declaration of ‘[01m[Kscanf[m[K’
+[01m[Khw1.c:21:5:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[Kgetchar[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+     [01;35m[Kgetchar[m[K();
+     [01;35m[K^~~~~~~[m[K
+]0;michael@michael-VirtualBox: ~/Documents/ECE373[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373[00m$ ls -l
+total 20
+-rwxrwxr-x 1 michael michael 9744 Apr 14 00:27 [0m[01;32mc-to-f[0m
+-rw-r--r-- 1 michael michael  437 Apr 13 23:45 hw1.c
+-rw-r--r-- 1 michael michael  104 Apr 13 23:28 hw1.h
+-rw-rw-r-- 1 michael michael    0 Apr 14 00:27 typescript
+]0;michael@michael-VirtualBox: ~/Documents/ECE373[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373[00m$ c-to[K[K[K[K./ c-to-f
+bash: ./: Is a directory
+]0;michael@michael-VirtualBox: ~/Documents/ECE373[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373[00m$ ./c-to-f
+Enter degrees in Fahrenheit "ff.f": 3 32.0
+
+Result: 0.000000
+]0;michael@michael-VirtualBox: ~/Documents/ECE373[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373[00m$ ./c-to-f
+Enter degrees in Fahrenheit "ff.f": 0.0
+
+Result: -17.777779
+]0;michael@michael-VirtualBox: ~/Documents/ECE373[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373[00m$ c-to-f[K[K[K[K[K[K./c-to-f
+Enter degrees in Fahrenheit "ff.f": 60.0 5
+
+Result: 15.833334
+]0;michael@michael-VirtualBox: ~/Documents/ECE373[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373[00m$ t[Kcat typescript
+]0;michael@michael-VirtualBox: ~/Documents/ECE373[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373[00m$ exit
+
+Script done on 2019-04-14 00:30:51-0700

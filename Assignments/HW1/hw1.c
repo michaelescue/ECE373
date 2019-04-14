@@ -1,10 +1,16 @@
 
- /*
-*   Fahrenheit to Clesius conversion program.
-*/
+ /**
+ * @file hw1.c
+ * @author your name (you@domain.com)
+ * @brief Fahrenheit to Clesius conversion program.
+ * @version 0.1
+ * @date 2019-04-14
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
 
 #include "hw1.h"
-
 #define N   256
 #define A   32
 

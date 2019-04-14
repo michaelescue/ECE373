@@ -6,6 +6,8 @@
 #define _HW1_H
 
 #include <stdio.h>
-#include <strings.h>
+#include <linux/init.h>
+#include <linux/module.h>
+MODULE_LICENSE("Dual BSD/GPL");
 
 #endif

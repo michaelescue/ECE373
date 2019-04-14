@@ -39,7 +39,7 @@ int main(void){
     //Operations
     temp = ((F-A)*temp);
 
-    printf("Result: %2f\n", temp);
+    printf("Result: %f degrees C\n", temp);
     
     return 1;
 }

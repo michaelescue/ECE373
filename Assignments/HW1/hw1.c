@@ -11,10 +11,19 @@
  */
 
 #include "hw1.h"
+
+/**
+ * @brief Defines for program.
+ * 
+ */
 #define N   256
 #define A   32
 
-
+/**
+ * @brief inline code for prompt, scan, display conversion results.
+ * 
+ * @return int 
+ */
 int main(void){
     float temp = 5.0/9.0;
     float F = 0.0;

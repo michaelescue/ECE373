@@ -1,0 +1,12 @@
+Script started on 2019-04-13 22:55:01-0700
+michael@michael-VirtualBox: ~/Documents$ pwd
+/home/michael/Documents
+michael@michael-VirtualBox: ~/Documents$ ls -l
+total 0
+-rw-r--r-- 1 michael michael 0 Apr 13 22:55 typescript
+michael@michael-VirtualBox: ~/Documents$ mkdir -v ECE373
+mkdir: created directory 'ECE373'
+michael@michael-VirtualBox: ~/Documents$ cd ECE373
+michael@michael-VirtualBox: ~/Documents/ECE373$ exit
+
+Script done on 2019-04-13 22:56:38-0700

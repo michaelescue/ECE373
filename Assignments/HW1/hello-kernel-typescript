@@ -1,60 +1,15 @@
-Script started on 2019-04-14 15:32:45-0700
+Script started on 2019-04-14 16:01:31-0700
 ]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW1[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW1[00m$ make
 make -C /lib/modules/4.18.0-15-generic/build SUBDIRS=/home/michael/Documents/ECE373/Assignments/HW1 modules
 make[1]: Entering directory '/usr/src/linux-headers-4.18.0-15-generic'
-  CC [M]  /home/michael/Documents/ECE373/Assignments/HW1/hello_kernel.o
   Building modules, stage 2.
   MODPOST 1 modules
-  CC      /home/michael/Documents/ECE373/Assignments/HW1/hello_kernel.mod.o
-  LD [M]  /home/michael/Documents/ECE373/Assignments/HW1/hello_kernel.ko
 make[1]: Leaving directory '/usr/src/linux-headers-4.18.0-15-generic'
 #gcc -c hw1.c
-]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW1[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW1[00m$ insmod hell_ker na[Kel.ko
-insmod: ERROR: could not load module hell_kernel.ko: No such file or directory
-]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW1[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW1[00m$ hllo[K[K[K[Kinsmod hello_ke rnel.ko
-insmod: ERROR: could not insert module hello_kernel.ko: Operation not permitted
-]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW1[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW1[00m$ d[Ksdo[K[Kudo insmod hel lo_kernel.ko
+]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW1[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW1[00m$ in[K[Ksudo insmod hel lo_kernel.ko
 [sudo] password for michael: 
-]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW1[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW1[00m$ cd ./var/log/me ssages
-bash: cd: ./var/log/messages: No such file or directory
-]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW1[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW1[00m$ l[Kcd .
-]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW1[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW1[00m$ ls
-'373Homework Template.docx'
-'Assignment 1 - Basic Linux and Hello Linux driver.pdf'
-'Assignment #1.docx'
- hello_kernel.c
- hello_kernel.ko
- hello_kernel.mod.c
- hello_kernel.mod.o
- hello_kernel.o
- hello-kernel-typescript
- hw1.c
- hw1.h
- Makefile
- modules.order
- Module.symvers
- typescript
- typescript2
-]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW1[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW1[00m$ cd /.
-]0;michael@michael-VirtualBox: /[01;32mmichael@michael-VirtualBox[00m:[01;34m/[00m$ ls
-[0m[01;34mbin[0m    [01;34metc[0m             [01;34mlib[0m         [01;34mmnt[0m   [01;34mrun[0m   swapfile  [01;34mvar[0m
-[01;34mboot[0m   [01;34mhome[0m            [01;34mlib64[0m       [01;34mopt[0m   [01;34msbin[0m  [01;34msys[0m       [01;36mvmlinuz[0m
-[01;34mcdrom[0m  [01;36minitrd.img[0m      [01;34mlost+found[0m  [01;34mproc[0m  [01;34msnap[0m  [30;42mtmp[0m       [01;36mvmlinuz.old[0m
-[01;34mdev[0m    [01;36minitrd.img.old[0m  [01;34mmedia[0m       [01;34mroot[0m  [01;34msrv[0m   [01;34musr[0m
-]0;michael@michael-VirtualBox: /[01;32mmichael@michael-VirtualBox[00m:[01;34m/[00m$ cd var/l
-lib/   local/ lock/  log/   
-]0;michael@michael-VirtualBox: /[01;32mmichael@michael-VirtualBox[00m:[01;34m/[00m$ cd var/log/messages[K[K[K[K[K[K[K[K
-]0;michael@michael-VirtualBox: /var/log[01;32mmichael@michael-VirtualBox[00m:[01;34m/var/log[00m$ ls
-alternatives.log  dpkg.log         kern.log.1           vboxadd-setup.log.1
-[0m[01;34mapt[0m               faillog          lastlog              vboxadd-setup.log.2
-auth.log          fontconfig.log   [01;34mspeech-dispatcher[0m    vboxadd-setup.log.3
-auth.log.1        [01;34mgdm3[0m             syslog               vboxadd-setup.log.4
-boot.log          gpu-manager.log  syslog.1             vboxadd-uninstall.log
-bootstrap.log     [01;34mhp[0m               tallylog             wtmp
-btmp              [01;34minstaller[0m        [01;34munattended-upgrades[0m
-[01;34mcups[0m              [01;34mjournal[0m          vboxadd-install.log
-[01;34mdist-upgrade[0m      kern.log         vboxadd-setup.log
-]0;michael@michael-VirtualBox: /var/log[01;32mmichael@michael-VirtualBox[00m:[01;34m/var/log[00m$ cd mes[K[K[K[K[K[Kdmesg
+]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW1[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW1[00m$ sudo rmmod hell o_kernel.ko
+]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW1[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW1[00m$ dmesg
 [32m[    0.000000] [0mLinux version 4.18.0-15-generic (buildd@lcy01-amd64-029) (gcc version 7.3.0 (Ubuntu 7.3.0-16ubuntu3)) #16~18.04.1-Ubuntu SMP Thu Feb 7 14:06:04 UTC 2019 (Ubuntu 4.18.0-15.16~18.04.1-generic 4.18.20)
 [32m[    0.000000] [0m[33mCommand line[0m: BOOT_IMAGE=/boot/vmlinuz-4.18.0-15-generic root=UUID=3803cf86-0472-497f-8e13-0488415a9d33 ro quiet splash
 [32m[    0.000000] [0mKERNEL supported cpus:
@@ -580,4 +535,53 @@ btmp              [01;34minstaller[0m        [01;34munattended-upgrades[0m
                17:41:26.489822 main     Log opened 2019-04-14T17:41:26.489076000Z[0m
 [32m[   34.378995] [0m[33m17:41:26.491247 main     OS Product[0m[1m: Linux[0m
 [32m[   34.380030] [0m[33m17:41:26.492275 main     OS Release[0m[1m: 4.18.0-15-generic[0m
-[32m[   34.381082] [0m[33m17:41:26.493332 main     OS Version[0m[1m: #16~18.04.1-Ubuntu SMP Thu Feb 7 14:06:04 UTC 2019
+[32m[   34.381082] [0m[33m17:41:26.493332 main     OS Version[0m[1m: #16~18.04.1-Ubuntu SMP Thu Feb 7 14:06:04 UTC 2019[0m
+[32m[   34.381993] [0m[33m17:41:26.494165 main     Executable[0m[1m: /opt/VBoxGuestAdditions-6.0.4/sbin/VBoxService
+               17:41:26.494167 main     Process ID: 1212
+               17:41:26.494167 main     Package type: LINUX_64BITS_GENERIC[0m
+[32m[   34.407003] [0m[1m17:41:26.519062 main     6.0.4 r128413 started. Verbose level = 0[0m
+[32m[   34.417423] [0m[33m17:41:26.529669 main     vbglR3GuestCtrlDetectPeekGetCancelSupport[0m[1m: Supported (#1)[0m
+[32m[   54.672159] [0m[33mrfkill[0m: input handler disabled
+[32m[  802.309120] [0m[33mhrtimer[0m[1m: interrupt took 20993369 ns[0m
+[32m[ 1012.167413] [0m[33mkauditd_printk_skb[0m[1m: 31 callbacks suppressed[0m
+[32m[ 1012.167414] [0m[33maudit[0m: type=1400 audit(1555264664.764:43): apparmor="STATUS" operation="profile_replace" profile="unconfined" name="/usr/lib/snapd/snap-confine" pid=20715 comm="apparmor_parser"
+[32m[ 1012.167749] [0m[33maudit[0m: type=1400 audit(1555264664.764:44): apparmor="STATUS" operation="profile_replace" profile="unconfined" name="/usr/lib/snapd/snap-confine//mount-namespace-capture-helper" pid=20715 comm="apparmor_parser"
+[32m[ 1280.104023] [0m[33msystemd[0m[1m: 25 output lines suppressed due to ratelimiting[0m
+[32m[ 1280.123904] [0m[33msystemd[1][0m: systemd 237 running in system mode. (+PAM +AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +SECCOMP +BLKID +ELFUTILS +KMOD -IDN2 +IDN -PCRE2 default-hierarchy=hybrid)
+[32m[ 1280.123934] [0m[33msystemd[1][0m: Detected virtualization oracle.
+[32m[ 1280.123938] [0m[33msystemd[1][0m: Detected architecture x86-64.
+[32m[ 1280.778337] [0m[33msystemd-journald[222][0m: Received SIGTERM from PID 1 (systemd).
+[32m[ 1280.789031] [0m[33msystemd[1][0m: Stopping Journal Service...
+[32m[ 1280.952672] [0m[33msystemd[1][0m: Stopped Journal Service.
+[32m[ 1280.955592] [0m[33msystemd[1][0m: Starting Journal Service...
+[32m[ 1281.006637] [0m[33msystemd[1][0m: Started Journal Service.
+[32m[ 1805.861967] [0mSGI XFS with ACLs, security attributes, realtime, no debug enabled
+[32m[ 1805.913703] [0m[33mJFS[0m: nTxBlock = 8192, nTxLock = 65536
+[32m[ 1805.980652] [0m[33mntfs[0m: driver 2.1.32 [Flags: R/O MODULE].
+[32m[ 1806.059038] [0mQNX4 filesystem 0.2.3 registered.
+[32m[ 1806.155089] [0m[33mraid6[0m: sse2x1   gen()  5890 MB/s
+[32m[ 1806.203127] [0m[33mraid6[0m: sse2x1   xor()  4344 MB/s
+[32m[ 1806.251310] [0m[33mraid6[0m: sse2x2   gen()  8098 MB/s
+[32m[ 1806.298466] [0m[33mraid6[0m: sse2x2   xor()  4776 MB/s
+[32m[ 1806.346732] [0m[33mraid6[0m: sse2x4   gen()  8402 MB/s
+[32m[ 1806.394559] [0m[33mraid6[0m: sse2x4   xor()  4785 MB/s
+[32m[ 1806.442282] [0m[33mraid6[0m: avx2x1   gen() 10440 MB/s
+[32m[ 1806.490572] [0m[33mraid6[0m: avx2x1   xor()  7019 MB/s
+[32m[ 1806.539008] [0m[33mraid6[0m: avx2x2   gen() 13208 MB/s
+[32m[ 1806.586532] [0m[33mraid6[0m: avx2x2   xor()  8743 MB/s
+[32m[ 1806.635029] [0m[33mraid6[0m: avx2x4   gen() 14665 MB/s
+[32m[ 1806.682587] [0m[33mraid6[0m: avx2x4   xor()  8885 MB/s
+[32m[ 1806.682589] [0m[33mraid6[0m: using algorithm avx2x4 gen() 14665 MB/s
+[32m[ 1806.682590] [0m[33mraid6[0m: .... xor() 8885 MB/s, rmw enabled
+[32m[ 1806.682591] [0m[33mraid6[0m: using avx2x2 recovery algorithm
+[32m[ 1806.711058] [0m[33mxor[0m: automatically using best checksumming function   avx       
+[32m[ 1806.762374] [0mBtrfs loaded, crc32c=crc32c-intel
+[32m[18277.205597] [0mHello, kernel
+[32m[18465.000305] [0mGoodbye, kernel
+[32m[19153.005968] [0mHello, kernel
+[32m[19168.375483] [0mGoodbye, kernel
+[32m[19257.432304] [0mHello, kernel
+[32m[19268.111347] [0mGoodbye, kernel
+]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW1[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW1[00m$ exit
+
+Script done on 2019-04-14 16:02:05-0700

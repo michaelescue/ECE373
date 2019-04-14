@@ -1,0 +1,37 @@
+_BUGS_
+
+       Currently, it is not possible to enable signal-driven I/O by specifying
+       O_ASYNC when calling open(); use fcntl(2) to enable this flag.
+
+       One  must  check for two different error codes, EISDIR and ENOENT, when
+       trying to determine whether the kernel supports  O_TMPFILE  functional‐
+       ity.
+
+       When  both  O_CREAT and O_DIRECTORY are specified in flags and the file
+       specified by pathname does not exist, open() will create a regular file
+       (i.e., O_DIRECTORY is ignored).
+
+_INCLUDED_FILES_
+
+	#include <sys/types.h>
+       	#include <sys/stat.h>
+       	#include <fcntl.h>
+
+_RELATED_SYS_CALLS_
+	chmod(2),  chown(2),  close(2)
+
+_TYPESCRIPT_
+
+	Script started on 2019-04-13 22:55:01-0700
+	michael@michael-VirtualBox: ~/Documents$ pwd
+	/home/michael/Documents
+	michael@michael-VirtualBox: ~/Documents$ ls -l
+	total 0
+	-rw-r--r-- 1 michael michael 0 Apr 13 22:55 typescript
+	michael@michael-VirtualBox: ~/Documents$ mkdir -v ECE373
+	mkdir: created directory 'ECE373'
+	michael@michael-VirtualBox: ~/Documents$ cd ECE373
+	michael@michael-VirtualBox: ~/Documents/ECE373$ exit
+
+	Script done on 2019-04-13 22:56:38-0700
+

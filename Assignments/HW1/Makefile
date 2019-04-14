@@ -18,11 +18,11 @@ all: hw1 hello
 hw1: hw1.o
 	$(C) -o $@ $(HW1OBJS)
 
-hello: hello.o
+hello: hello.o $(HW1_HDRS)
 	$(C) -o $@ $(HELLO_OBJS)
 
-hello.o: hello.c $(HW1_HDRS)
-	$(C) -c 1dalloc.c
+hw1: hw1.c $(HW1_HDRS)
+	$(C) -c $(HW1_OBJS)
 	
 clean: 
 	rm $(HW1OBJS)

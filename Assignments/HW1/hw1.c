@@ -1,7 +1,7 @@
 
  /**
  * @file hw1.c
- * @author your name (you@domain.com)
+ * @author Michael Escue
  * @brief Fahrenheit to Clesius conversion program.
  * @version 0.1
  * @date 2019-04-14

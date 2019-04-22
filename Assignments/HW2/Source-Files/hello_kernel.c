@@ -23,9 +23,7 @@ MODULE_LICENSE("Dual BSD/GPL");
 
 #define FIRSTMINOR 0
 #define DEV_COUNT 1
-
-dev_t *my_device = NULL;
-char my_dev_name[] = "HW2module";
+#define MY_DEV_NAME "HW2module"
 
 /** Device structure: From example 4 by PJ Waskiewicz   */
  struct my_dev_struct {
@@ -35,16 +33,30 @@ char my_dev_name[] = "HW2module";
 
 /** File operations structure: From example 4 by PJ Waskiewicz */
 static struct file_operations mydev_fops = {
-	.owner = my_dev_name,
-	.open = example4_open,
-}
+	.owner = THIS_MODULE,
+    .write = ,
+    .read = ,
+]}
+
+/**
+ * @brief 
+ * 
+ * @param cdev 
+ * @param num 
+ * @param count 
+ * @return int 
+ */
+int cdev_add(struct cdev *cdev, dev_t num, unsigned int count){
+
+
+    }
 
 /** Initiate/create module   */
 static int __init hello_init(void){
     printk(KERN_INFO "Hello, kernel-HW2\n");
 
     /** Dynamically allocate the device file pointer.    */
-    if (alloc_chrdev_region(my_device.device_node, FIRSTMINOR, DEV_COUNT, my_dev_name)) {
+    if (alloc_chrdev_region(my_device.device_node, FIRSTMINOR, DEV_COUNT, MY_DEV_NAME)) {
 		printk(KERN_ERR "Device allocation failed.\n");
 		return -1;
 	}
@@ -52,6 +64,10 @@ static int __init hello_init(void){
     /** Print to kernel the my_device major and minor numbers of my_device. */
     printk(KERN_INFO "Major number: %d, Minor number: %d\n",
         MAJOR(*my_device.device_node), MINOR(*my_device.device_node));
+
+    /** Initialize char device  */
+    
+
 
     return 0;
 }

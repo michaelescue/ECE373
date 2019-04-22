@@ -1,3 +1,44 @@
+/**
+ * @file hw2notes.c	
+ * @author your name (you@domain.com)
+ * @brief 
+ * @version 0.1
+ * @date 2019-04-22
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ * BEGIN:
+ * 
+ * 	_init function order:
+ * 		1.	Allocate char device node.
+ * 		2.	printk message for allocated Major, Minor numbers.
+ * 		3.	cdev_init char device with file operations.
+ * 		4.	cdev_add module with printk error checking.
+ * 			error checking should free the allocated char space on error.
+ * 		5.	return.
+ * 
+ * 	_exit function order:
+ * 		1.	cdev_del the char device to remove the link.
+ * 		2.	free the allocated char space.
+ * 
+ * 	struct mydev_dev{
+ * 			struct	cdev cdev;
+ * 			dev_t	mydev_node;
+ * 		}mydev
+ * 
+ * 	-	mydev_dev structure is used in allocation, printk Major/Minor, "cdev_add",
+ * 		and "cdev_delete".
+ * 
+
+ * 	struct file_operations mydev_fops = {
+ * 		.owner = THIS_MODULE,
+ * 		.open = example4_open,
+ * 	}
+ * 
+ * 	-	mydev_fops structure is used for the "cdev_init". 
+ * 
+ */
+
 
 #include <linux/cdev.h>
 /**
@@ -16,6 +57,14 @@ struct cdev {
 	unsigned int count;
 } __randomize_layout;
 
+void cdev_init(struct cdev *cdev, struct file_operations *fops)
+
+/** Adding a char device.
+ * file_operations must be configured and ready to go before “cdev_add()”
+ * */
+int cdev_add(struct cdev *cdev, dev_t num, unsigned int count)
+
+void cdev_del(struct cdev *cdev)
 
 #include <linux/fs.h>
 /**
@@ -25,8 +74,12 @@ struct cdev {
 struct file_operations {
 	struct module *owner;
 	loff_t (*llseek) (struct file *, loff_t, int);
+
+	/** Read used in HW2	*/
 	ssize_t (*read) (struct file *, char __user *, size_t, loff_t *);
+	/** Write used in HW2	*/
 	ssize_t (*write) (struct file *, const char __user *, size_t, loff_t *);
+
 	ssize_t (*read_iter) (struct kiocb *, struct iov_iter *);
 	ssize_t (*write_iter) (struct kiocb *, struct iov_iter *);
 	int (*iterate) (struct file *, struct dir_context *);
@@ -36,6 +89,7 @@ struct file_operations {
 	long (*compat_ioctl) (struct file *, unsigned int, unsigned long);
 	int (*mmap) (struct file *, struct vm_area_struct *);
 	unsigned long mmap_supported_flags;
+
 	int (*open) (struct inode *, struct file *);
 	int (*flush) (struct file *, fl_owner_t id);
 	int (*release) (struct inode *, struct file *);

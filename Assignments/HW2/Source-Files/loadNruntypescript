@@ -1,0 +1,78 @@
+Script started on 2019-04-22 16:22:41-0700
+]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW2/Source-Files[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW2/Source-Files[00m$ sudo insmod hello_kernel.ko
+[sudo] password for michael: 
+]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW2/Source-Files[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW2/Source-Files[00m$ cd /.
+]0;michael@michael-VirtualBox: /[01;32mmichael@michael-VirtualBox[00m:[01;34m/[00m$ cd /proc//d[K[Kdriver/[K[K[K[K[K[K[K
+]0;michael@michael-VirtualBox: /proc[01;32mmichael@michael-VirtualBox[00m:[01;34m/proc[00m$ cat devices 
+Character devices:
+  1 mem
+  4 /dev/vc/0
+  4 tty
+  4 ttyS
+  5 /dev/tty
+  5 /dev/console
+  5 /dev/ptmx
+  5 ttyprintk
+  6 lp
+  7 vcs
+ 10 misc
+ 13 input
+ 21 sg
+ 29 fb
+ 89 i2c
+ 99 ppdev
+108 ppp
+116 alsa
+128 ptm
+136 pts
+180 usb
+189 usb_device
+204 ttyMAX
+226 drm
+241 HW2mod
+242 hidraw
+243 aux
+244 bsg
+245 hmm_device
+246 watchdog
+247 ptp
+248 pps
+249 rtc
+250 dax
+251 dimmctl
+252 ndctl
+253 tpm
+254 gpiochip
+
+Block devices:
+  7 loop
+  8 sd
+  9 md
+ 11 sr
+ 65 sd
+ 66 sd
+ 67 sd
+ 68 sd
+ 69 sd
+ 70 sd
+ 71 sd
+128 sd
+129 sd
+130 sd
+131 sd
+132 sd
+133 sd
+134 sd
+135 sd
+253 device-mapper
+254 mdp
+259 blkext
+]0;michael@michael-VirtualBox: /proc[01;32mmichael@michael-VirtualBox[00m:[01;34m/proc[00m$ ./a.[K[K[K[Kcd 
+Display all 220 possibilities? (y or n)
+]0;michael@michael-VirtualBox: /proc[01;32mmichael@michael-VirtualBox[00m:[01;34m/proc[00m$ cd /home/michael/Documents/ECE373/Assignments/HW2
+]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW2[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW2[00m$ ./a.[K[K[K[Kcd Source-Files/
+]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW2/Source-Files[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW2/Source-Files[00m$ ./a.out 
+Error on open.: No such file or directory
+]0;michael@michael-VirtualBox: ~/Documents/ECE373/Assignments/HW2/Source-Files[01;32mmichael@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/HW2/Source-Files[00m$ exit
+
+Script done on 2019-04-22 16:25:24-0700

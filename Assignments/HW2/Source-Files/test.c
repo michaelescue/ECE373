@@ -13,21 +13,25 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-int test(void){
+#define BUF_SIZE 256
+
+int main(void){
     errno = 0;
     char *buf[BUF_SIZE] ={NULL};
 
-    FILE * fd = NULL;
+    int fd = 0;
     if((fd = open("/proc/241", O_RDONLY)) == -1){
-        perror(errno);
+        perror("Error on open.");
         return -1;
     }
 
     read(fd, buf, sizeof(int));
 
  if(close(fd) == -1){
-        perror(errno);
+        perror("Error on close.");
         return -1;
     }
 

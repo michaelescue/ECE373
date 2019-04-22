@@ -29,40 +29,16 @@ MODULE_LICENSE("Dual BSD/GPL");
 #define BUF_SIZE 256
 
 
-/**
- * @brief 
- * 
- * @param __user 
- * @param len 
- * @return int 
- */
+/** Function prototypes */
 ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset);
 
-/**
- * @brief 
- * 
- * @param __user 
- * @param len 
- * @return int 
- */
+
 ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *offset);
 
-/**
- * @brief 
- * 
- * @param inode 
- * @param file 
- * @return int 
- */
+
 int fopen(struct inode *inode, struct file *file);
 
-/**
- * @brief 
- * 
- * @param inode 
- * @param indoe 
- * @return int 
- */
+
 int frelease(struct inode *inode, struct file *indoe);
 
 
@@ -123,11 +99,7 @@ ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *off
     return 0;
 }
 
-/**
- * @brief 
- * 
- * @return int hello_init exit status.
- */
+/** Module initialization   */
 static int __init hello_init(void){
     printk(KERN_INFO "Hello, kernel-HW2\n");
 
@@ -171,10 +143,7 @@ static int __init hello_init(void){
     return 0;
 }
 
-/**
- * @brief 
- * 
- */
+/** Moduel exit */
 static void __exit hello_exit(void){
     printk(KERN_INFO "Goodbye, kernel-HW2\n");
     

@@ -24,11 +24,13 @@ MODULE_LICENSE("Dual BSD/GPL");
 #define FIRSTMINOR 0
 #define DEV_COUNT 1
 #define MY_DEV_NAME "HW2module"
+#define MYDEV_SYSCALL_VAL 40
 
 /** Device structure: From example 4 by PJ Waskiewicz   */
 static struct my_dev_struct {
 	struct cdev my_cdev;
 	dev_t device_node;
+    int syscall_val;
 } *my_device;
 
 /** File operations structure: From example 4 by PJ Waskiewicz */
@@ -39,8 +41,30 @@ static struct file_operations mydev_fops = {
 ]}
 
 
-int rfile(){
-    copy_to_user
+int rfile(const char __user *buf, size_t len){
+    
+    if(copy_to_user(buf, kbuffer, sizeof(int))){
+	    printk(KERN_ERR "copy_to_user Error.\n");
+        return -EFAULT;
+    }
+
+    return 0;
+}
+
+int wfile(const char __user *buf, size_t len){
+    char * kbuffer;
+
+    if(kbuffer = kmalloc(len, GFP_KERNEL)){
+        printk(KERN_ERR "kmalloc Error.\n");
+        return -ENOMEM;
+    }
+
+    if(copy_from_user(kbuffer, buf, sizeof(int))){
+	    printk(KERN_ERR "copy_to_user Error.\n");
+        return -EFAULT;
+    }
+
+    return 0;
 }
 
 /**
@@ -73,6 +97,8 @@ static int __init hello_init(void){
 
 		return -1;
     }
+
+    my_device.syscall_val = MYDEV_SYSCALL_VAL;
 
     return 0;
 }

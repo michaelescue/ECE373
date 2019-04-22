@@ -45,16 +45,30 @@
  * 
  * 	-	mydev_fops structure is used for the "cdev_init". 
  * 
- * 		wfile function order:
+ ***	wfile function order:
  * 		1.	copy from user buffer.
- * 
- * 		rfile	function order:
- * 		1.	copy from kernel buffer to user buffer.
  * 			a. use "kmalloc" to allocate kernel buffer.
+ * 
+ ***	void *kmalloc(size_t size, gfp_t flags)
+ * 
+ * 			b. use "copy_from_user" to copy user buffer.
+ * 
+ ***		copy_from_user(void *to, const void __user *from, unsigned long n) 
+ * 
  * 		2.	Perform functions.
  * 		3.	free kernel buffer memory allocated.
  * 			a. use "kfree" to release allocated memory.
  * 
+ ***	void kfree(const void *);
+ * 
+ * 
+ ***	rfile function order:
+ * 		1.	copy from kernel buffer to user buffer.
+ *  		b. use "copy_to_user" to copy user buffer.
+ * 
+ ***		copy_to_user(void __user *to, const void *from, unsigned long n)
+ * 
+ * 		2.	Perform functions. 
  */
 
 

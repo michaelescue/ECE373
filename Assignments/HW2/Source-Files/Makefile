@@ -18,7 +18,6 @@ obj-m += hello_kernel.o
 default:
 	$(MAKE) -C $(KERNEL_DIR) SUBDIRS=$(PWD) modules
 
-	
 clean: 
 	$(MAKE) -C $(KERNEL_DIR) SUBDIRS=$(PWD) clean 
 

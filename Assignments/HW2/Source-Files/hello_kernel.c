@@ -9,6 +9,10 @@
  * 
  */
 
+/** Include Files for kernel interaction: 
+ *  -   From example 4 by PJ Waskiewicz
+ *  -   From Lecture 06 - Driver Intro - part 2 - cross compile hints
+*/
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/kdev_t.h>
@@ -23,19 +27,31 @@ MODULE_LICENSE("Dual BSD/GPL");
 dev_t *my_device = NULL;
 char my_dev_name[] = "HW2module";
 
+/** Device structure: From example 4 by PJ Waskiewicz   */
+ struct my_dev_struct {
+	struct cdev cdev;
+	dev_t device_node;
+} *my_device;
+
+/** File operations structure: From example 4 by PJ Waskiewicz */
+static struct file_operations mydev_fops = {
+	.owner = my_dev_name,
+	.open = example4_open,
+}
+
 /** Initiate/create module   */
 static int __init hello_init(void){
     printk(KERN_INFO "Hello, kernel-HW2\n");
 
     /** Dynamically allocate the device file pointer.    */
-    if (alloc_chrdev_region(my_device, FIRSTMINOR, DEV_COUNT, my_dev_name)) {
+    if (alloc_chrdev_region(my_device.device_node, FIRSTMINOR, DEV_COUNT, my_dev_name)) {
 		printk(KERN_ERR "Device allocation failed.\n");
 		return -1;
 	}
 
     /** Print to kernel the my_device major and minor numbers of my_device. */
     printk(KERN_INFO "Major number: %d, Minor number: %d\n",
-        MAJOR(*my_device), MINOR(*my_device));
+        MAJOR(*my_device.device_node), MINOR(*my_device.device_node));
 
     return 0;
 }
@@ -44,7 +60,7 @@ static void __exit hello_exit(void){
     printk(KERN_INFO "Goodbye, kernel-HW2\n");
     
     /** Free allocated memory for device file.  */
-    unregister_chrdev_region(*my_device, DEV_COUNT);
+    unregister_chrdev_region(*my_device.device_node, DEV_COUNT);
 
    // No return, void function;
 }

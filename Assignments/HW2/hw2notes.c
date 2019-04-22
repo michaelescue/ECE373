@@ -109,6 +109,7 @@ struct file_operations {
 
 	/** Read used in HW2	*/
 	ssize_t (*read) (struct file *, char __user *, size_t, loff_t *);
+	
 	/** Write used in HW2	*/
 	ssize_t (*write) (struct file *, const char __user *, size_t, loff_t *);
 

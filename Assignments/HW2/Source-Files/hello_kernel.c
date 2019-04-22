@@ -18,6 +18,8 @@
 #include <linux/kdev_t.h>
 #include <linux/fs.h>
 #include <linux/cdev.h>
+#include <linux/slab.h>
+#include <linux/uaccess.h>
 
 MODULE_LICENSE("Dual BSD/GPL");
 
@@ -25,6 +27,27 @@ MODULE_LICENSE("Dual BSD/GPL");
 #define DEV_COUNT 1
 #define MY_DEV_NAME "HW2module"
 #define MYDEV_SYSCALL_VAL 40
+
+/** function prototypes */
+
+/**
+ * @brief 
+ * 
+ * @param __user 
+ * @param len 
+ * @return int 
+ */
+ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset);
+
+/**
+ * @brief 
+ * 
+ * @param __user 
+ * @param len 
+ * @return int 
+ */
+ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *offset);
+
 
 /** Device structure: From example 4 by PJ Waskiewicz   */
 static struct my_dev_struct {
@@ -36,14 +59,14 @@ static struct my_dev_struct {
 /** File operations structure: From example 4 by PJ Waskiewicz */
 static struct file_operations mydev_fops = {
 	.owner = THIS_MODULE,
-    .write = ,
-    .read = ,
-]}
+    .write = wfile,
+    .read = rfile,
+};
 
 
-int rfile(const char __user *buf, size_t len){
+ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset){
     
-    if(copy_to_user(buf, kbuffer, sizeof(int))){
+    if(copy_to_user(buf, &my_device->syscall_val, sizeof(int))){
 	    printk(KERN_ERR "copy_to_user Error.\n");
         return -EFAULT;
     }
@@ -51,10 +74,10 @@ int rfile(const char __user *buf, size_t len){
     return 0;
 }
 
-int wfile(const char __user *buf, size_t len){
+ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *offset){
     char * kbuffer;
 
-    if(kbuffer = kmalloc(len, GFP_KERNEL)){
+    if((kbuffer = kmalloc(len, GFP_KERNEL))){
         printk(KERN_ERR "kmalloc Error.\n");
         return -ENOMEM;
     }
@@ -63,6 +86,10 @@ int wfile(const char __user *buf, size_t len){
 	    printk(KERN_ERR "copy_to_user Error.\n");
         return -EFAULT;
     }
+
+    //operations using kbuffer
+
+    kfree(kbuffer);    
 
     return 0;
 }
@@ -76,7 +103,7 @@ static int __init hello_init(void){
     printk(KERN_INFO "Hello, kernel-HW2\n");
 
     /** Dynamically allocate the device file pointer.    */
-    if (alloc_chrdev_region(my_device.device_node, FIRSTMINOR,
+    if (alloc_chrdev_region(&my_device->device_node, FIRSTMINOR,
         DEV_COUNT, MY_DEV_NAME)) {
 		printk(KERN_ERR "Device allocation error.\n");
 		return -1;
@@ -84,33 +111,37 @@ static int __init hello_init(void){
 
     /** Print to kernel the my_device major and minor numbers of my_device. */
     printk(KERN_INFO "Major number: %d, Minor number: %d\n",
-        MAJOR(*my_device.device_node), MINOR(*my_device.device_node));
+        MAJOR(my_device->device_node), MINOR(my_device->device_node));
 
     /** Initialize char device  */
-    cdev_init(my_dev.my_cdev, &mydev_fops);
+    cdev_init(&my_device->my_cdev, &mydev_fops);
 
     /** Add chard device to kernel fs   */
-    if(cdev_add(my_dev.my_cdev, my_device.device_node, DEV_COUNT)){
+    if(cdev_add(&my_device->my_cdev, my_device->device_node, DEV_COUNT)){
         printk(KERN_ERR "Char device add Error.\n");
 		/* clean up chrdev allocation */
-		unregister_chrdev_region(my_device.device_node, DEV_COUNT);
+    unregister_chrdev_region(my_device->device_node, DEV_COUNT);
 
 		return -1;
     }
 
-    my_device.syscall_val = MYDEV_SYSCALL_VAL;
+    my_device->syscall_val = MYDEV_SYSCALL_VAL;
 
     return 0;
 }
 
+/**
+ * @brief 
+ * 
+ */
 static void __exit hello_exit(void){
     printk(KERN_INFO "Goodbye, kernel-HW2\n");
     
     /** Delete the initialized char device  */
-    cdev_del()
+    cdev_del(&my_device->my_cdev);
 
     /** Free allocated memory for device file.  */
-    unregister_chrdev_region(*my_device.device_node, DEV_COUNT);
+    unregister_chrdev_region(my_device->device_node, DEV_COUNT);
 
    // No return, void function;
 }

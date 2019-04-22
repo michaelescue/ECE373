@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "stat.h": "c",
+        "errno.h": "c",
+        "fcntl.h": "c",
+        "unistd.h": "c"
+    }
+}

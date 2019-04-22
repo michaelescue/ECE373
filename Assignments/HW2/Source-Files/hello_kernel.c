@@ -20,13 +20,17 @@
 #include <linux/cdev.h>
 #include <linux/slab.h>
 #include <linux/uaccess.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
 
 
 MODULE_LICENSE("Dual BSD/GPL");
 
 #define FIRSTMINOR 0
 #define DEV_COUNT 1
-#define MYDEV_SYSCALL_VAL 40
+#define MYDEV_SYSCALL_VAL 40deeeeeeee
+#define BUF_SIZE 256
 
 
 /**
@@ -47,6 +51,24 @@ ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset);
  */
 ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *offset);
 
+/**
+ * @brief 
+ * 
+ * @param inode 
+ * @param file 
+ * @return int 
+ */
+int fopen(struct inode *inode, struct file *file);
+
+/**
+ * @brief 
+ * 
+ * @param inode 
+ * @param indoe 
+ * @return int 
+ */
+int frelease(struct inode *inode, struct file *indoe);
+
 
 /** Device structure: From example 4 by PJ Waskiewicz   */
 static struct my_dev_struct {
@@ -60,7 +82,19 @@ static struct file_operations mydev_fops = {
 	.owner = THIS_MODULE,
     .write = wfile,
     .read = rfile,
+    .open = fopen,
+    .release = frelease,
 };
+
+int fopen(struct inode *inode, struct file *file){
+    printk(KERN_INFO "Goodbye, kernel file open-HW2\n");
+    return 0;
+}
+
+int frelease(struct inode *inode, struct file *indoe){
+    printk(KERN_INFO "Goodbye, kernel file closed-HW2\n");
+    return 0;
+}
 
 
 ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset){
@@ -108,6 +142,9 @@ static int __init hello_init(void){
 		return -1;
 	}
 
+        printk(KERN_INFO "Hello, kernel has mad it past allocation-HW2\n");
+
+
     /** Print to kernel the my_device major and minor numbers of my_device. */
     printk(KERN_INFO "Major number: %d, Minor number: %d\n",
         MAJOR(my_device.device_node), MINOR(my_device.device_node));
@@ -115,16 +152,25 @@ static int __init hello_init(void){
     /** Initialize char device  */
     cdev_init(&my_device.my_cdev, &mydev_fops);
 
+    printk(KERN_INFO "Hello, kernel has mad it past initialization-HW2\n");
+
+
     /** Add chard device to kernel fs   */
     if(cdev_add(&my_device.my_cdev, my_device.device_node, DEV_COUNT)){
         printk(KERN_ERR "Char device add Error.\n");
+        
 		/* clean up chrdev allocation */
         unregister_chrdev_region(my_device.device_node, DEV_COUNT);
-
 		return -1;
     }
+            
+    printk(KERN_INFO "Hello, kernel has been added-HW2\n");
+
 
     my_device.syscall_val = MYDEV_SYSCALL_VAL;
+
+        printk(KERN_INFO "Hello, kernel syscall_val = %d-HW2\n", my_device.syscall_val);
+
 
     return 0;
 }
@@ -143,6 +189,25 @@ static void __exit hello_exit(void){
     unregister_chrdev_region(my_device.device_node, DEV_COUNT);
 
    // No return, void function;
+}
+
+int test(void){
+    errno = 0;
+    char *buf[BUF_SIZE] ={NULL};
+
+    FILE * fd = NULL;
+    if((fd = open("/proc/241", O_RDONLY)) == -1){
+        perror(errno);
+        return -1;
+    }
+
+    read(fd, buf, sizeof(int));
+
+ if(close(fd) == -1){
+        perror(errno);
+        return -1;
+    }
+
 }
 
 

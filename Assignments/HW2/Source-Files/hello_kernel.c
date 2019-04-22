@@ -21,6 +21,7 @@
 #include <linux/slab.h>
 #include <linux/uaccess.h>
 
+
 MODULE_LICENSE("Dual BSD/GPL");
 
 #define FIRSTMINOR 0
@@ -50,7 +51,7 @@ ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *off
 /** Device structure: From example 4 by PJ Waskiewicz   */
 static struct my_dev_struct {
 	struct cdev my_cdev;
-	dev_t *device_node;
+	dev_t device_node;
     int syscall_val;
 } my_device;
 
@@ -101,24 +102,24 @@ static int __init hello_init(void){
     printk(KERN_INFO "Hello, kernel-HW2\n");
 
     /** Dynamically allocate the device file pointer.    */
-    if (alloc_chrdev_region(my_device.device_node, FIRSTMINOR,
-        DEV_COUNT, "HW2moduel")) {
+    if (alloc_chrdev_region(&my_device.device_node, FIRSTMINOR,
+        DEV_COUNT, "HW2mod")) {
 		printk(KERN_ERR "Device allocation error.\n");
 		return -1;
 	}
 
     /** Print to kernel the my_device major and minor numbers of my_device. */
     printk(KERN_INFO "Major number: %d, Minor number: %d\n",
-        MAJOR(*my_device.device_node), MINOR(*my_device.device_node));
+        MAJOR(my_device.device_node), MINOR(my_device.device_node));
 
     /** Initialize char device  */
     cdev_init(&my_device.my_cdev, &mydev_fops);
 
     /** Add chard device to kernel fs   */
-    if(cdev_add(&my_device.my_cdev, *my_device.device_node, DEV_COUNT)){
+    if(cdev_add(&my_device.my_cdev, my_device.device_node, DEV_COUNT)){
         printk(KERN_ERR "Char device add Error.\n");
 		/* clean up chrdev allocation */
-    unregister_chrdev_region(*my_device.device_node, DEV_COUNT);
+        unregister_chrdev_region(my_device.device_node, DEV_COUNT);
 
 		return -1;
     }
@@ -139,7 +140,7 @@ static void __exit hello_exit(void){
     cdev_del(&my_device.my_cdev);
 
     /** Free allocated memory for device file.  */
-    unregister_chrdev_region(*my_device.device_node, DEV_COUNT);
+    unregister_chrdev_region(my_device.device_node, DEV_COUNT);
 
    // No return, void function;
 }

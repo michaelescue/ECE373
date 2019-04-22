@@ -20,16 +20,12 @@
 #include <linux/cdev.h>
 #include <linux/slab.h>
 #include <linux/uaccess.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <unistd.h>
-
 
 MODULE_LICENSE("Dual BSD/GPL");
 
 #define FIRSTMINOR 0
 #define DEV_COUNT 1
-#define MYDEV_SYSCALL_VAL 40deeeeeeee
+#define MYDEV_SYSCALL_VAL 40
 #define BUF_SIZE 256
 
 
@@ -190,26 +186,6 @@ static void __exit hello_exit(void){
 
    // No return, void function;
 }
-
-int test(void){
-    errno = 0;
-    char *buf[BUF_SIZE] ={NULL};
-
-    FILE * fd = NULL;
-    if((fd = open("/proc/241", O_RDONLY)) == -1){
-        perror(errno);
-        return -1;
-    }
-
-    read(fd, buf, sizeof(int));
-
- if(close(fd) == -1){
-        perror(errno);
-        return -1;
-    }
-
-}
-
 
 module_init(hello_init);
 

@@ -26,8 +26,8 @@ MODULE_LICENSE("Dual BSD/GPL");
 #define MY_DEV_NAME "HW2module"
 
 /** Device structure: From example 4 by PJ Waskiewicz   */
- struct my_dev_struct {
-	struct cdev cdev;
+static struct my_dev_struct {
+	struct cdev my_cdev;
 	dev_t device_node;
 } *my_device;
 
@@ -38,26 +38,23 @@ static struct file_operations mydev_fops = {
     .read = ,
 ]}
 
+
+int rfile(){
+    copy_to_user
+}
+
 /**
  * @brief 
  * 
- * @param cdev 
- * @param num 
- * @param count 
- * @return int 
+ * @return int hello_init exit status.
  */
-int cdev_add(struct cdev *cdev, dev_t num, unsigned int count){
-
-
-    }
-
-/** Initiate/create module   */
 static int __init hello_init(void){
     printk(KERN_INFO "Hello, kernel-HW2\n");
 
     /** Dynamically allocate the device file pointer.    */
-    if (alloc_chrdev_region(my_device.device_node, FIRSTMINOR, DEV_COUNT, MY_DEV_NAME)) {
-		printk(KERN_ERR "Device allocation failed.\n");
+    if (alloc_chrdev_region(my_device.device_node, FIRSTMINOR,
+        DEV_COUNT, MY_DEV_NAME)) {
+		printk(KERN_ERR "Device allocation error.\n");
 		return -1;
 	}
 
@@ -66,8 +63,16 @@ static int __init hello_init(void){
         MAJOR(*my_device.device_node), MINOR(*my_device.device_node));
 
     /** Initialize char device  */
-    
+    cdev_init(my_dev.my_cdev, &mydev_fops);
 
+    /** Add chard device to kernel fs   */
+    if(cdev_add(my_dev.my_cdev, my_device.device_node, DEV_COUNT)){
+        printk(KERN_ERR "Char device add Error.\n");
+		/* clean up chrdev allocation */
+		unregister_chrdev_region(my_device.device_node, DEV_COUNT);
+
+		return -1;
+    }
 
     return 0;
 }
@@ -75,6 +80,9 @@ static int __init hello_init(void){
 static void __exit hello_exit(void){
     printk(KERN_INFO "Goodbye, kernel-HW2\n");
     
+    /** Delete the initialized char device  */
+    cdev_del()
+
     /** Free allocated memory for device file.  */
     unregister_chrdev_region(*my_device.device_node, DEV_COUNT);
 

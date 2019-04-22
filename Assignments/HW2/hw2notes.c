@@ -9,33 +9,51 @@
  * 
  * BEGIN:
  * 
- * 	_init function order:
- * 		1.	Allocate char device node.
- * 		2.	printk message for allocated Major, Minor numbers.
- * 		3.	cdev_init char device with file operations.
- * 		4.	cdev_add module with printk error checking.
- * 			error checking should free the allocated char space on error.
- * 		5.	return.
+ *** 	_init function order:
+ * 	X	1.	Allocate char device node.
+ * 	X	2.	printk message for allocated Major, Minor numbers.
+ * 	X	3.	cdev_init char device with file operations.
  * 
- * 	_exit function order:
- * 		1.	cdev_del the char device to remove the link.
- * 		2.	free the allocated char space.
+ *** 		void cdev_init(struct cdev *cdev, struct file_operations *fops)
+ * 	
+ * 	X	4.	cdev_add module with printk error checking.
+ * 	X		a.	error checking should free the allocated char space on error.
  * 
- * 	struct mydev_dev{
- * 			struct	cdev cdev;
- * 			dev_t	mydev_node;
- * 		}mydev
+ *** 		int cdev_add(struct cdev *cdev, dev_t num, unsigned int count)
+ * 
+ * 	X	5.	return.
+ * 
+ ***	_exit function order:
+ * 	X	1.	cdev_del the char device to remove the link.
+ * 
+ *** 		void cdev_del(struct cdev *cdev)
+ * 
+ * 	X	2.	free the allocated char space.
+ * 
+ ***	struct mydev_dev{
+ ***			struct	cdev cdev;
+ *** 			dev_t	mydev_node;
+ *** 		}mydev
  * 
  * 	-	mydev_dev structure is used in allocation, printk Major/Minor, "cdev_add",
  * 		and "cdev_delete".
  * 
-
- * 	struct file_operations mydev_fops = {
- * 		.owner = THIS_MODULE,
- * 		.open = example4_open,
- * 	}
+ *** 	struct file_operations mydev_fops = {
+ *** 		.owner = THIS_MODULE,
+ *** 		.open = example4_open,
+ *** 	}
  * 
  * 	-	mydev_fops structure is used for the "cdev_init". 
+ * 
+ * 		wfile function order:
+ * 		1.	copy from user buffer.
+ * 
+ * 		rfile	function order:
+ * 		1.	copy from kernel buffer to user buffer.
+ * 			a. use "kmalloc" to allocate kernel buffer.
+ * 		2.	Perform functions.
+ * 		3.	free kernel buffer memory allocated.
+ * 			a. use "kfree" to release allocated memory.
  * 
  */
 

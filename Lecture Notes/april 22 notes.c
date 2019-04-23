@@ -19,13 +19,13 @@ static struct bash commands{
 
     ls -l /dev/"device"
 
-    strace
+    $ strace
 /**
  * strace prints out all the system calls used during a program execution.
  * Likely have to build the program with debugging symbols.
  */
 
-    sudo bash   
+    $ sudo bash   
 /**
  * sudo puts the bash shell into a different environment.  
  * sudo is to change user, but defaults to root.
@@ -34,12 +34,20 @@ static struct bash commands{
  * 
  */
 
-    su
+    $ su
 /**   
  * su sets user to root (default).
- * Creates a shell within a shell that is root.
- * example:
- *      
+ * Creates a shell within a shell that is root #
+ *        
+*/
+
+chmod
+
+/**
+ * changes permissions.
+ * accepts octal input for setting permission flags.
+ * the man page 
+ * 
  *      chmod 777
  *            bit positions
  *            111_111_111
@@ -59,16 +67,4 @@ static struct bash commands{
  *              read bit      |
  *               write bit    |   Octal 3   [World]
  *                execute bit |
- * 
- *        
-*/
-
-chmod
-
-/**
- * changes permissions.
- * accepts octal input for setting permission flags.
- * the man page 
- * 
  */
-

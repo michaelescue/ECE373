@@ -68,3 +68,6 @@ chmod
  *               write bit    |   Octal 3   [World]
  *                execute bit |
  */
+ 
+int ISA EISA
+ 

@@ -14,6 +14,7 @@ static struct bash commands{
 /**
  * prints to terminal, will print with format specifier.
  * inverts the bits.(?)
+ * "cancels" out 777 for all permission bits set. 
  */
 
 
@@ -34,7 +35,7 @@ static struct bash commands{
  * 
  */
 
-    $ su
+    # su
 /**   
  * su sets user to root (default).
  * Creates a shell within a shell that is root #
@@ -67,4 +68,13 @@ chmod
  *              read bit      |
  *               write bit    |   Octal 3   [World]
  *                execute bit |
+ */
+
+tail -f
+
+/**
+ * Uses tail command to show real time writes appended to target file.
+ * tail -f /var/log/messages
+ *      Shows dmesg.
+ * 
  */

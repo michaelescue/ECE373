@@ -69,6 +69,7 @@ chmod
  *               write bit    |   Octal 3   [World]
  *                execute bit |
  */
+<<<<<<< HEAD
 
 tail -f
 
@@ -78,3 +79,8 @@ tail -f
  *      Shows dmesg.
  * 
  */
+=======
+ 
+int ISA EISA
+ 
+>>>>>>> 2c1b7395d4171ae7d7089d7ff55c84594c5a4f94

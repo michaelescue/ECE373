@@ -82,9 +82,6 @@ ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset){
         return -EFAULT;
     }
 
-    printk(KERN_INFO "my_device pointer to *buf.");  
-
-
     return 0;
 }
 

@@ -36,7 +36,8 @@ int main(void) {
         return -1;
     }
 
-    int sys_call_val = atoi(buf);
+    int sys_call_val = 0;
+    sys_call_val = buf[0];
 
     printf("sys_call_val = %d\n", sys_call_val);
 

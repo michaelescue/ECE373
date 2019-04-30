@@ -73,7 +73,11 @@ int frelease(struct inode *inode, struct file *file){
 
 ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset){
     
-    if(copy_to_user(buf, &my_device.syscall_val, sizeof(int))){
+	/*
+	*	_copy_to_user(void __user *to, const void *from, unsigned long n)
+	*/
+	
+    if(copy_to_user(buf, &my_device.syscall_val, len)){
 	    printk(KERN_ERR "copy_to_user Error.\n");
         return -EFAULT;
     }
@@ -92,7 +96,11 @@ ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *off
         return -ENOMEM;
     }
 
-    if(copy_from_user(kbuffer, buf, sizeof(int))){
+	/*
+	*	copy_from_user(void *to, const void __user *from, unsigned long n)
+	*/
+	
+    if(copy_from_user(kbuffer, buf, len)){
 	    printk(KERN_ERR "copy_to_user Error.\n");
         return -EFAULT;
     }

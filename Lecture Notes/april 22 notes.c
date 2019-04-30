@@ -164,9 +164,14 @@ PCI EXPRESS Bus
 	-	Switch is a hierachical sub Root Complex top level for sub end points.
 	
 
-	
-	
+The BAR
 
+	- Base address register.
+
+	- "# lspci -s <bus:slot:fn> -vv" command 
+	
+	- Lists pci devices and details for the base address registers
+	
 
 
 

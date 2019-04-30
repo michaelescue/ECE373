@@ -23,10 +23,12 @@
 
 MODULE_LICENSE("Dual BSD/GPL");
 
-#define FIRSTMINOR 0
+#define FIRSTMINOR 1
 #define DEV_COUNT 1
 #define MYDEV_SYSCALL_VAL 40
 #define BUF_SIZE 256
+
+static int x = 0;
 
 
 /** Function prototypes */
@@ -63,7 +65,7 @@ int fopen(struct inode *inode, struct file *file){
     return 0;
 }
 
-int frelease(struct inode *inode, struct file *indoe){
+int frelease(struct inode *inode, struct file *file){
     printk(KERN_INFO "Goodbye, kernel file closed-HW2\n");
     return 0;
 }
@@ -75,6 +77,9 @@ ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset){
 	    printk(KERN_ERR "copy_to_user Error.\n");
         return -EFAULT;
     }
+
+    printk(KERN_INFO "my_device pointer to *buf.");  
+
 
     return 0;
 }
@@ -103,41 +108,40 @@ ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *off
 static int __init hello_init(void){
     printk(KERN_INFO "Hello, kernel-HW2\n");
 
-    /** Dynamically allocate the device file pointer.    */
-    if (alloc_chrdev_region(&my_device.device_node, FIRSTMINOR,
-        DEV_COUNT, "HW2mod")) {
-		printk(KERN_ERR "Device allocation error.\n");
+/** Dynamically allocate the device file pointer.    */
+    if ((x = alloc_chrdev_region(&my_device.device_node, FIRSTMINOR,
+        DEV_COUNT, "hello_kernel"))) {
+		printk(KERN_ERR "Device allocation error.\n\t");
 		return -1;
 	}
 
-        printk(KERN_INFO "Hello, kernel has mad it past allocation-HW2\n");
+        printk(KERN_INFO "Hello, kernel has mad it past allocation-HW2 = %d\n", x);
 
 
-    /** Print to kernel the my_device major and minor numbers of my_device. */
+/** Print to kernel the my_device major and minor numbers of my_device. */
     printk(KERN_INFO "Major number: %d, Minor number: %d\n",
         MAJOR(my_device.device_node), MINOR(my_device.device_node));
 
-    /** Initialize char device  */
+/** Initialize char device: Void function  */
     cdev_init(&my_device.my_cdev, &mydev_fops);
 
-    printk(KERN_INFO "Hello, kernel has mad it past initialization-HW2\n");
+    printk(KERN_INFO "Hello, kernel has mad it past initialization-HW2 = %d\n", x);
 
 
-    /** Add chard device to kernel fs   */
-    if(cdev_add(&my_device.my_cdev, my_device.device_node, DEV_COUNT)){
-        printk(KERN_ERR "Char device add Error.\n");
+/** Add chard device to kernel fs   */
+    if((x = cdev_add(&my_device.my_cdev, my_device.device_node, DEV_COUNT))){
+        printk(KERN_ERR "Char device add Error.\n\t");
         
-		/* clean up chrdev allocation */
+    /** clean up chrdev allocation */
         unregister_chrdev_region(my_device.device_node, DEV_COUNT);
 		return -1;
     }
             
-    printk(KERN_INFO "Hello, kernel has been added-HW2\n");
-
+    printk(KERN_INFO "Hello, kernel has been added-HW2 = %d\n", x);
 
     my_device.syscall_val = MYDEV_SYSCALL_VAL;
 
-        printk(KERN_INFO "Hello, kernel syscall_val = %d-HW2\n", my_device.syscall_val);
+    printk(KERN_INFO "Hello, kernel syscall_val = %d-HW2\n", my_device.syscall_val);
 
 
     return 0;

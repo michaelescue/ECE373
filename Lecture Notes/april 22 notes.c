@@ -9,7 +9,7 @@
  * 
  */
 
-static struct bash commands{
+ bash commands:
     int umask;
 /**
  * prints to terminal, will print with format specifier.
@@ -68,6 +68,105 @@ chmod
  *               write bit    |   Octal 3   [World]
  *                execute bit |
  */
- 
-int ISA EISA
+
+ICH  : Integrated Controller Hub.
+
+	-	i7 and i9 PCI connectivity is mostly in the CPU instead of in the ICH (w/ ICH can cause performance issues.
+	
+PCI Bus (pre 'Express') 
+
+	- 	Historically the Bus had to talk to the "Bus Bridge" which woud then forward communications to the "Frontside"
+		System BUs to communicate with the CPU.
+		
+	-	PCI is parallel protocol.
+	
+	-	PCI Express is serial (uses "latents").
+	
+	-	Supplies only 45W of power (v4.0) 
+	
+	-	When hardware interfaces with the PCI "Link Training Occurs" with the config space of the PCI device.
+	
+		>	Data block begins with vendor & device ID.
+		
+		>	Lists capabilities (IRQs, Suspend capabilities, Device speeds, Memory mapped).
+		
+		> 	Register sets get mapped into the memory mapped I/O.
+		
+PCI Lifecycle
+
+	- 	OS operations
+
+		> 	Scans PCI bus for devices.
+	
+		>	Queries found device for config block.
+	
+		>	Finds deviceID in PCI driver table.
+	
+		>	Loads driver and calls "probe()".
+	
+		>	When removing the driver: calls "remove()" to unload device & driver.
+	
+			+ PCI device is waiting (if not uplugged) waiting for another device to load and use it.
+		
+	-	The driver
+	
+		>	Initis device and maps it into memory.
+		
+		>	Register interrupt handlers.
+		
+		>	Waits to service interrupts and OS requests.
+	
+		>	Stops device, erleases memory.
+		
+	-	PCI access in Linux
+	
+		>	"init_modue()" and "exit_module()" are still used
+		
+		> 	"probe()" /* is required */ for PCI initialization.
+		
+			+	The callback on this function is a struct with the name, id_table, probe, remove, suspend, resume, etc.
+			
+			+ 	Example: If a system tries to suspend, but doesnt, its probably because the driver hasnt provied the
+				detail on suspend capability, or doesnt support it.
+				
+		> 	When the PCI driver is registered with the kernel:
+			
+			-	The bus driver is what you are talking to with your driver.
+			
+			-	The bus driver owns the "idtable"
+			
+			-	See http://lxr.free-electronscom/source/drivers/net/ethernet/intel/e1000e/netdev.c
+			
+				> Full network driver, not everything in this doc is needed.
+				
+e1000e/netdev
+
+	-	Ftrace bug
+	
+		>	Function tracer inside the kernel
+		
+		>	2.6.27 kernel included a glitch from redHat which caused all the eeprom drivers to be nuked!
+		
+			+ PJ had to help fix the error which essentially erased the drivers (no write lock!)
+			
+		
+
+PCI EXPRESS Bus
+
+	-	Root Complex (Top level interface)
+		
+		> Communicates to CPU.
+	
+	-	End point (Cards, Graphics)
+	
+	-	Switch is a hierachical sub Root Complex top level for sub end points.
+	
+
+	
+	
+
+
+
+
+
  

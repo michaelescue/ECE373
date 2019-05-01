@@ -27,12 +27,13 @@ int main(void) {
 
     int fd = 0;
 
+/* open file    */
     if ((fd = open("/dev/hellokernel", O_RDWR)) == -1) {
         perror("Error on open.");
         return -1;
     }
 
-
+/* Read file    */
     if ((read(fd, buf, sizeof(int))) == -1) {
         perror("Error on read.");
         return -1;
@@ -45,15 +46,26 @@ int main(void) {
 
     sys_call_val++;
 
+/* Write to file    */
      if ((write(fd, &sys_call_val, BUF_SIZE)) == -1) {
         perror("Error on write.");
         return -1;
     }
 
- if (close(fd) == -1) {
-        perror("Error on close.");
-        return -1;
-    }
+/* 2nd readback after write */
+    if ((read(fd, buf, sizeof(int))) == -1) {
+            perror("Error on read.");
+            return -1;
+        }
 
-return 0;
+        sys_call_val = buf[0];
+
+        printf("sys_call_val = %d\n", sys_call_val);
+
+    if (close(fd) == -1) {
+            perror("Error on close.");
+            return -1;
+        }
+
+    return 0;
 }

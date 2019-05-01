@@ -251,7 +251,6 @@ static int __init hello_init(void){
     unreg_pci_driver:
         pci_unregister_driver(&pci_blinkdriver);
 
-    unreg_chrdev:
         unregister_chrdev_region(my_device.device_node, DEV_COUNT);
         return -1;
 }
@@ -262,6 +261,10 @@ static void __exit hello_exit(void){
     
     /** Delete the initialized char device  */
     cdev_del(&my_device.my_cdev);
+
+    /* remove PCI driver */
+    pci_unregister_driver(&pci_blinkdriver);
+
 
     /** Free allocated memory for device file.  */
     unregister_chrdev_region(my_device.device_node, DEV_COUNT);

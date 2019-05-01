@@ -4,7 +4,7 @@ The BAR
 
 	- "# lspci -s <bus:slot:fn> -vv" command 
 	
-	- Lists pci devices and details for the base address registers
+	- "lspci" Lists pci devices and details for the base address registers
 	
 Accessing PCI Regions
 

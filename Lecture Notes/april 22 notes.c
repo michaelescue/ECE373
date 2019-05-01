@@ -112,7 +112,7 @@ PCI Lifecycle
 		
 	-	The driver
 	
-		>	Initis device and maps it into memory.
+		>	Init's device and maps it into memory.
 		
 		>	Register interrupt handlers.
 		

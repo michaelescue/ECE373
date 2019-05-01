@@ -26,10 +26,12 @@ int main(void) {
     char buf[BUF_SIZE] ={0};
 
     int fd = 0;
-    if ((fd = open("/dev/hello_kernel", O_RDONLY|O_WRONLY)) == -1) {
+
+    if ((fd = open("/dev/hellokernel", O_RDWR)) == -1){
         perror("Error on open.");
         return -1;
     }
+
 
     if ((read(fd, buf, sizeof(int))) == -1) {
         perror("Error on read.");

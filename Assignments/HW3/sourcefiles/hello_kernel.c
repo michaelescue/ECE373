@@ -3,7 +3,7 @@
  * @author Michael Escue
  * @brief A file for implementing hello module.
  * @version 0.1
- * @date 2019-04-14
+ * @date 2019-04-24
  * 
  * @Code sections based on example code provided by Peter (PJ) Waskiewicz
  * 
@@ -34,15 +34,11 @@ static int x = 0;
 /** Function prototypes */
 ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset);
 
-
 ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *offset);
-
 
 int fopen(struct inode *inode, struct file *file);
 
-
-int frelease(struct inode *inode, struct file *indoe);
-
+int frelease(struct inode *inode, struct file *file);
 
 /** Device structure: From example 4 by PJ Waskiewicz   */
 static struct my_dev_struct {
@@ -121,7 +117,7 @@ static int __init hello_init(void){
 
 /** Dynamically allocate the device file pointer.    */
     if ((x = alloc_chrdev_region(&my_device.device_node, FIRSTMINOR,
-        DEV_COUNT, "hello_kernel"))) {
+        DEV_COUNT, "hellokernel"))) {
 		printk(KERN_ERR "Device allocation error.\n\t");
 		return -1;
 	}

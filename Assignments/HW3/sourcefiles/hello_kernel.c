@@ -49,7 +49,7 @@ static void pci_blinkdriver_remove(struct pci_dev *pdev);
 static struct my_dev_struct {
 	struct cdev my_cdev;
 	dev_t device_node;
-    __u32 syscall_val;
+    unsigned int syscall_val;
     long led_initial_val;
 } my_device;
 
@@ -145,7 +145,7 @@ static int pci_blinkdriver_probe(struct pci_dev *pdev, const struct pci_device_i
 
 static void pci_blinkdriver_remove(struct pci_dev *pdev) {
     printk(KERN_INFO "Removing PCI driver.\n");
-
+sudo 
     iounmap(mypci.hw_addr);
     pci_release_selected_regions(pdev, pci_select_bars(pdev, IORESOURCE_MEM));
 }

@@ -46,12 +46,22 @@ int main(void) {
     int sys_call_val = 0;
     sys_call_val = buf[0];
 
-    printf("sys_call_val = %d\n", sys_call_val);
+     printf("sys_call_val = %x\n", sys_call_val);
+/*
+    for(int i = 0; i < 32; i++){
+    printf("sys_call_val = %x\n", buf[i]);
+    }
+*/
 
-    sys_call_val++;
+    //sys_call_val++;
+
+    sys_call_val = 0x0080e000;
+
+    printf("sys_call_val write val= %x\n", sys_call_val);
+
 
 /* Write to file    */
-     if ((write(fd, &sys_call_val, BUF_SIZE)) == -1) {
+     if ((write(fd, &sys_call_val, sizeof(sys_call_val))) == -1) {
         perror("Error on write.");
         return -1;
     }
@@ -64,7 +74,7 @@ int main(void) {
 
         sys_call_val = buf[0];
 
-        printf("sys_call_val = %d\n", sys_call_val);
+        printf("sys_call_val = %x\n", sys_call_val);
 
     if (close(fd) == -1) {
             perror("Error on close.");

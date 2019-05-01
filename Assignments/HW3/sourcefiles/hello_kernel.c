@@ -145,7 +145,6 @@ static int pci_blinkdriver_probe(struct pci_dev *pdev, const struct pci_device_i
 
 static void pci_blinkdriver_remove(struct pci_dev *pdev) {
     printk(KERN_INFO "Removing PCI driver.\n");
-sudo 
     iounmap(mypci.hw_addr);
     pci_release_selected_regions(pdev, pci_select_bars(pdev, IORESOURCE_MEM));
 }

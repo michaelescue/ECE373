@@ -15,10 +15,20 @@ PWD := $(shell pwd)
 
 obj-m += hello_kernel.o
 
-default:
+default: ledmon.o test.o
 	$(MAKE) -C $(KERNEL_DIR) SUBDIRS=$(PWD) modules
-	gcc test.c
+	gcc -s test.o -o test.out
+	gcc -s ledmon.o -o ledmon.out
+
+
+test.o:
+	gcc -c test.c 
+
+ledmon.o: 
+	gcc -c ledmon.c
+
 clean: 
 	$(MAKE) -C $(KERNEL_DIR) SUBDIRS=$(PWD) clean 
-	rm a.out
+	rm test.out
+	rm ledmon.out
 

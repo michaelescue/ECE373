@@ -26,21 +26,29 @@ int main(void) {
     char buf[BUF_SIZE] ={0};
 
     int fd = 0;
-    if ((fd = open("/dev/hellokernel", O_RDONLY)) == -1) {
+
+    if ((fd = open("/dev/hellokernel", O_RDWR)) == -1) {
         perror("Error on open.");
         return -1;
     }
+
 
     if ((read(fd, buf, sizeof(int))) == -1) {
         perror("Error on read.");
         return -1;
     }
 
-    int sys_call_val = atoi(buf);
+    int sys_call_val = 0;
+    sys_call_val = buf[0];
 
     printf("sys_call_val = %d\n", sys_call_val);
 
-    write(fd, &sys_call_val, BUF_SIZE);
+    sys_call_val++;
+
+     if ((write(fd, &sys_call_val, BUF_SIZE)) == -1) {
+        perror("Error on write.");
+        return -1;
+    }
 
  if (close(fd) == -1) {
         perror("Error on close.");

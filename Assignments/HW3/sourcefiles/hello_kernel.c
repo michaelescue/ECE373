@@ -190,7 +190,7 @@ ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *off
 
     my_device.syscall_val = *kbuffer;
 
-    printk(KERN_INFO "Kernel: syscall_val = %d\n", my_device.syscall_val);
+    printk(KERN_INFO "Kernel: write syscall_val = %x\n", my_device.syscall_val);
 
     /* Writing to device    */
     writel(my_device.syscall_val, mypci.hw_addr + 0xE00);

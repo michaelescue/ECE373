@@ -20,6 +20,7 @@
 #include <linux/cdev.h>
 #include <linux/slab.h>
 #include <linux/uaccess.h>
+#include <linux/pci.h>
 
 MODULE_LICENSE("Dual BSD/GPL");
 
@@ -40,12 +41,33 @@ int fopen(struct inode *inode, struct file *file);
 
 int frelease(struct inode *inode, struct file *file);
 
+static int pci_blinkdriver_probe(struct pci_dev *pdev, const struct pci_device_id *ent);
+
 /** Device structure: From example 4 by PJ Waskiewicz   */
 static struct my_dev_struct {
 	struct cdev my_cdev;
 	dev_t device_node;
     int syscall_val;
+    long led_initial_val;
 } my_device;
+
+/** PCI structs from Apr 24 lecture */
+static const struct pci_device_id pci_blinkdrivertable[] = {
+    { PCI_DEVICE(0x8086, 0x100e)},
+    {},
+};
+
+static struct pci_driver pci_blinkdriver = {
+    .name = "blinkdriver",
+    .id_table = pci_blinkdrivertable,
+    .probe = pci_blinkdriver_probe,     // called when pci subsystem gets capable device
+    //.remove = pci_blinkdriver_remove,
+};
+
+static struct mypci {
+    struct pci_dev *pdev;
+    void *hw_addr;
+} mypci;
 
 /** File operations structure: From example 4 by PJ Waskiewicz */
 static struct file_operations mydev_fops = {
@@ -66,7 +88,60 @@ int frelease(struct inode *inode, struct file *file){
     return 0;
 }
 
+/** PCI operations from Apr 24 lecture  */
 
+static int pci_blinkdriver_probe(struct pci_dev *pdev, const struct pci_device_id *ent){
+
+    resource_size_t mmio_start, mmio_len;
+    unsigned long barmask;
+
+    printk(KERN_INFO "Blink driver probe called.\n");
+
+    // get bar mask.
+
+    barmask = pci_select_bars(pdev, IORESOURCE_MEM);
+    
+    printk(KERN_INFO "barmask %lx", barmask);
+
+    if(pci_request_selected_regions(pdev, barmask, "blinkdriver")) {
+
+        printk(KERN_ERR "request selected region failed.\n");
+
+        goto unregister_selected_regions;
+
+    }
+
+    mmio_start = pci_resource_start(pdev, 0);
+    mmio_len = pci_resource_len(pdev, 0);
+
+    printk(KERN_INFO "mmio start: %lx", (unsigned long) mmio_start);
+
+    printk(KERN_INFO "mmio len: %lx", (unsigned long) mmio_len);
+
+    if(!(mypci.hw_addr = ioremap(mmio_start, mmio_len))) {
+        
+        printk(KERN_ERR "ioremap failed\n");
+
+        goto unregister_ioremap;
+    }
+
+    // working
+
+    my_device.led_initial_val = readl(mypci.hw_addr + 0xE00);
+
+    printk(KERN_INFO "initial val is %lx\n", my_device.led_initial_val);
+
+    return 0;
+
+    unregister_ioremap:
+        iounmap(mypci.hw_addr);
+
+    unregister_selected_regions:
+        pci_release_selected_regions(pdev, pci_select_bars(pdev, IORESOURCE_MEM));
+        return -1;
+}
+
+/** System call functions   */
 ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset){
     
 	/*
@@ -139,9 +214,16 @@ static int __init hello_init(void){
     if((x = cdev_add(&my_device.my_cdev, my_device.device_node, DEV_COUNT))){
         printk(KERN_ERR "Char device add Error.\n\t");
         
-    /** clean up chrdev allocation */
+    /** clean up chrdev allocation if add fails */
         unregister_chrdev_region(my_device.device_node, DEV_COUNT);
 		return -1;
+    }
+
+/* register driver as pci   */
+
+   if(pci_register_driver(&pci_blinkdriver)){
+        printk(KERN_ERR "pci register failed.\n");
+        goto unreg_pci_driver;
     }
             
     printk(KERN_INFO "Kernel: cdev added with dev_t node. Return = %d\n", x);
@@ -150,11 +232,17 @@ static int __init hello_init(void){
 
     printk(KERN_INFO "Kernel: syscall_val = %d\n", my_device.syscall_val);
 
-
     return 0;
+
+    unreg_pci_driver:
+        pci_unregister_driver(&pci_blinkdriver);
+
+    unreg_chrdev:
+        unregister_chrdev_region(my_device.device_node, DEV_COUNT);
+        return -1;
 }
 
-/** Moduel exit */
+/** Module exit */
 static void __exit hello_exit(void){
     printk(KERN_INFO "Kernel: Goodby, driver deleted and unregistered.\n");
     

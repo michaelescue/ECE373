@@ -41,7 +41,12 @@ int main(void) {
 
     printf("sys_call_val = %d\n", sys_call_val);
 
-    write(fd, &sys_call_val, BUF_SIZE);
+    sys_call_val++;
+
+     if ((write(fd, &sys_call_val, sizeof(int))) == -1) {
+        perror("Error on write.");
+        return -1;
+    }
 
  if (close(fd) == -1) {
         perror("Error on close.");

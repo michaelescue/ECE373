@@ -17,8 +17,8 @@ obj-m += hello_kernel.o
 
 default: ledmon.o test.o
 	$(MAKE) -C $(KERNEL_DIR) SUBDIRS=$(PWD) modules
-	gcc -s test.o
-	gcc -s -o ledmon.o ledmon.out
+	gcc -s test.o -o test.out
+	gcc -s ledmon.o -o ledmon.out
 
 
 test.o:
@@ -29,6 +29,6 @@ ledmon.o:
 
 clean: 
 	$(MAKE) -C $(KERNEL_DIR) SUBDIRS=$(PWD) clean 
-	rm a.out
-	rm ledmon.o ledmon.out
+	rm test.out
+	rm ledmon.out
 

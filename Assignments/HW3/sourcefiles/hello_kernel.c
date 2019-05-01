@@ -85,8 +85,9 @@ ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *off
 
     char *kbuffer;
 
-    if((kbuffer = kmalloc(len, GFP_KERNEL))){
+    if((kbuffer = kmalloc(len, GFP_KERNEL)) == NULL){
         printk(KERN_ERR "kmalloc Error.\n");
+        printk("kbuffer = %s\n", kbuffer);
         return -ENOMEM;
     }
 
@@ -104,7 +105,6 @@ ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *off
     my_device.syscall_val = *kbuffer;
 
     printk(KERN_INFO "Kernel: syscall_val = %d\n", my_device.syscall_val);
-
 
     kfree(kbuffer);    
 

@@ -27,7 +27,7 @@ int main(void) {
 
     int fd = 0;
 
-    if ((fd = open("/dev/hellokernel", O_RDWR)) == -1){
+    if ((fd = open("/dev/hellokernel", O_RDWR)) == -1) {
         perror("Error on open.");
         return -1;
     }
@@ -45,7 +45,7 @@ int main(void) {
 
     sys_call_val++;
 
-     if ((write(fd, &sys_call_val, sizeof(int))) == -1) {
+     if ((write(fd, &sys_call_val, BUF_SIZE)) == -1) {
         perror("Error on write.");
         return -1;
     }

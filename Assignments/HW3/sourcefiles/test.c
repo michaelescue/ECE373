@@ -33,11 +33,15 @@ int main(void) {
         return -1;
     }
 
+    printf("POST SYSCALL OPEN\n");
+
 /* Read file    */
     if ((read(fd, buf, sizeof(int))) == -1) {
         perror("Error on read.");
         return -1;
     }
+
+    printf("POST SYSCALL READ\n");
 
     int sys_call_val = 0;
     sys_call_val = buf[0];

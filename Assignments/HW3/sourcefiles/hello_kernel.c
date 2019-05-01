@@ -43,11 +43,13 @@ int frelease(struct inode *inode, struct file *file);
 
 static int pci_blinkdriver_probe(struct pci_dev *pdev, const struct pci_device_id *ent);
 
+static void pci_blinkdriver_remove(struct pci_dev *pdev);
+
 /** Device structure: From example 4 by PJ Waskiewicz   */
 static struct my_dev_struct {
 	struct cdev my_cdev;
 	dev_t device_node;
-    int syscall_val;
+    __u32 syscall_val;
     long led_initial_val;
 } my_device;
 
@@ -61,7 +63,7 @@ static struct pci_driver pci_blinkdriver = {
     .name = "blinkdriver",
     .id_table = pci_blinkdrivertable,
     .probe = pci_blinkdriver_probe,     // called when pci subsystem gets capable device
-    //.remove = pci_blinkdriver_remove,
+    .remove = pci_blinkdriver_remove,
 };
 
 static struct mypci {
@@ -88,7 +90,7 @@ int frelease(struct inode *inode, struct file *file){
     return 0;
 }
 
-/** PCI operations from Apr 24 lecture  */
+/** PCI operations from Apr 24/29 lecture  */
 
 static int pci_blinkdriver_probe(struct pci_dev *pdev, const struct pci_device_id *ent){
 
@@ -141,9 +143,19 @@ static int pci_blinkdriver_probe(struct pci_dev *pdev, const struct pci_device_i
         return -1;
 }
 
+static void pci_blinkdriver_remove(struct pci_dev *pdev) {
+    printk(KERN_INFO "Removing PCI driver.\n");
+
+    iounmap(mypci.hw_addr);
+    pci_release_selected_regions(pdev, pci_select_bars(pdev, IORESOURCE_MEM));
+}
+
 /** System call functions   */
 ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset){
     
+    /* Read from device */
+    my_device.syscall_val = readl(mypci.hw_addr + 0xE00);
+
 	/*
 	*	_copy_to_user(void __user *to, const void *from, unsigned long n)
 	*/
@@ -180,6 +192,9 @@ ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *off
     my_device.syscall_val = *kbuffer;
 
     printk(KERN_INFO "Kernel: syscall_val = %d\n", my_device.syscall_val);
+
+    /* Writing to device    */
+    writel(my_device.syscall_val, mypci.hw_addr + 0xE00);
 
     kfree(kbuffer);    
 

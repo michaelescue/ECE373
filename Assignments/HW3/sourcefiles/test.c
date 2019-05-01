@@ -23,7 +23,7 @@
 
 int main(void) {
     errno = 0;
-    char buf[BUF_SIZE] ={0};
+    int buf[BUF_SIZE] ={0};
 
     int fd = 0;
 
@@ -33,7 +33,7 @@ int main(void) {
         return -1;
     }
 
-    printf("POST SYSCALL OPEN\n");
+    //printf("POST SYSCALL OPEN\n");
 
 /* Read file    */
     if ((read(fd, buf, sizeof(int))) == -1) {
@@ -41,41 +41,36 @@ int main(void) {
         return -1;
     }
 
-    printf("POST SYSCALL READ\n");
+    //printf("POST SYSCALL READ\n");
 
     int sys_call_val = 0;
     sys_call_val = buf[0];
 
-     printf("sys_call_val = %x\n", sys_call_val);
-/*
-    for(int i = 0; i < 32; i++){
-    printf("sys_call_val = %x\n", buf[i]);
-    }
-*/
+    printf("LEDCTL = 0x%x\n", sys_call_val);
 
-    //sys_call_val++;
+    sys_call_val = 0xe;  // Turn on LED 0.
 
-    sys_call_val = 0x0080e000;
+   // printf("sys_call_val write val= %x, size of = %ld\n", sys_call_val, sizeof(sys_call_val));
 
-    printf("sys_call_val write val= %x\n", sys_call_val);
-
-
-/* Write to file    */
+/* Write to file - ENABLE LED0   */
      if ((write(fd, &sys_call_val, sizeof(sys_call_val))) == -1) {
         perror("Error on write.");
         return -1;
     }
 
-/* 2nd readback after write */
-    if ((read(fd, buf, sizeof(int))) == -1) {
-            perror("Error on read.");
-            return -1;
-        }
+    sleep(2);
 
-        sys_call_val = buf[0];
+    sys_call_val = 0x0;  // Turn off LED 0.
 
-        printf("sys_call_val = %x\n", sys_call_val);
+   // printf("sys_call_val write val= %x, size of = %ld\n", sys_call_val, sizeof(sys_call_val));
 
+/* Write to file - DISABLE   */
+     if ((write(fd, &sys_call_val, sizeof(sys_call_val))) == -1) {
+        perror("Error on write.");
+        return -1;
+    }
+
+/* Close file   */
     if (close(fd) == -1) {
             perror("Error on close.");
             return -1;

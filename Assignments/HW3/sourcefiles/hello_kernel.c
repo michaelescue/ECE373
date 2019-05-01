@@ -169,11 +169,11 @@ ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset){
 
 ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *offset){
 
-    char *kbuffer;
+    int *kbuffer;
 
     if((kbuffer = kmalloc(len, GFP_KERNEL)) == NULL){
         printk(KERN_ERR "kmalloc Error.\n");
-        printk("kbuffer = %s\n", kbuffer);
+        printk("kbuffer = %d\n", kbuffer[0]);
         return -ENOMEM;
     }
 

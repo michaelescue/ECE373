@@ -10,7 +10,15 @@ Accessing PCI Regions
 
 	-	"pci_request_selected_regions()" maps I/O BAR into pci_device.
 	
+		>	#include <include/linux/pci.h>
+	
+		>	int pci_request_selected_regions(struct pci_dev *, int, const char *);
+	
 	-	"ioremap()" Returns the physical address of the requested BAR
+	
+		>	#include <arch/x86/include/asm/io.h>
+	
+		>	static inline void __iomem *ioremap(resource_size_t offset, unsigned long size)
 	
 		>	At this point PCI reads and writes can be issued to the devices
 		
@@ -19,6 +27,10 @@ Accessing PCI Regions
 Removing the PCI devices
 	
 	-	"iounmap()" and "pci_release_selected_regions()"
+	
+		>	void pci_release_selected_regions(struct pci_dev *, int);
+		
+		>	extern void iounmap(volatile void __iomem *addr);
 		
 		>	Must be called from the remove function, not the "exit_module"!
 		
@@ -50,12 +62,16 @@ Source file structs:
 			{},
 		};
 		
+		> #include <include/linux/mod_devicetable.h>
+		
 	3.	static struct pci_driver pci_blinkDriver = {	// Similar to file_operations struct
 			.name = "Blink Driver"
 			.id_table = pci_blinkDriverTable,
 			.probe = pci_blinkDriver_probe,		// When the PCI subsystem gets a device that you are capable of driving.
 			.remove = pci_blinkDriver_remove,	
 		};
+		
+		> #include <include/linux/pci.h>
 		
 Source file driver operations:
 

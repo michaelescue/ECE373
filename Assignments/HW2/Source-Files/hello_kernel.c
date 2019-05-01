@@ -3,7 +3,7 @@
  * @author Michael Escue
  * @brief A file for implementing hello module.
  * @version 0.1
- * @date 2019-04-14
+ * @date 2019-04-24
  * 
  * @Code sections based on example code provided by Peter (PJ) Waskiewicz
  * 
@@ -34,15 +34,11 @@ static int x = 0;
 /** Function prototypes */
 ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset);
 
-
 ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *offset);
-
 
 int fopen(struct inode *inode, struct file *file);
 
-
-int frelease(struct inode *inode, struct file *indoe);
-
+int frelease(struct inode *inode, struct file *file);
 
 /** Device structure: From example 4 by PJ Waskiewicz   */
 static struct my_dev_struct {
@@ -61,43 +57,54 @@ static struct file_operations mydev_fops = {
 };
 
 int fopen(struct inode *inode, struct file *file){
-    printk(KERN_INFO "Goodbye, kernel file open-HW2\n");
+    printk(KERN_INFO "Kernel:File Opened.\n");
     return 0;
 }
 
 int frelease(struct inode *inode, struct file *file){
-    printk(KERN_INFO "Goodbye, kernel file closed-HW2\n");
+    printk(KERN_INFO "Kernel:File Closed.\n");
     return 0;
 }
 
 
 ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset){
     
-    if(copy_to_user(buf, &my_device.syscall_val, sizeof(int))){
+	/*
+	*	_copy_to_user(void __user *to, const void *from, unsigned long n)
+	*/
+	
+    if(copy_to_user(buf, &my_device.syscall_val, len)){
 	    printk(KERN_ERR "copy_to_user Error.\n");
         return -EFAULT;
     }
-
-    printk(KERN_INFO "my_device pointer to *buf.");  
-
 
     return 0;
 }
 
 ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *offset){
-    char * kbuffer;
 
-    if((kbuffer = kmalloc(len, GFP_KERNEL))){
+    char *kbuffer;
+
+    if((kbuffer = kmalloc(len, GFP_KERNEL)) == NULL){
         printk(KERN_ERR "kmalloc Error.\n");
+        printk("kbuffer = %s\n", kbuffer);
         return -ENOMEM;
     }
 
-    if(copy_from_user(kbuffer, buf, sizeof(int))){
+	/*
+	*	copy_from_user(void *to, const void __user *from, unsigned long n)
+	*/
+	
+    if(copy_from_user(kbuffer, buf, len)){
 	    printk(KERN_ERR "copy_to_user Error.\n");
         return -EFAULT;
     }
 
     //operations using kbuffer
+
+    my_device.syscall_val = *kbuffer;
+
+    printk(KERN_INFO "Kernel: syscall_val = %d\n", my_device.syscall_val);
 
     kfree(kbuffer);    
 
@@ -106,16 +113,16 @@ ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *off
 
 /** Module initialization   */
 static int __init hello_init(void){
-    printk(KERN_INFO "Hello, kernel-HW2\n");
+    printk(KERN_INFO "Hello, kernel driver initializing.\n");
 
 /** Dynamically allocate the device file pointer.    */
     if ((x = alloc_chrdev_region(&my_device.device_node, FIRSTMINOR,
-        DEV_COUNT, "hello_kernel"))) {
+        DEV_COUNT, "hellokernel"))) {
 		printk(KERN_ERR "Device allocation error.\n\t");
 		return -1;
 	}
 
-        printk(KERN_INFO "Hello, kernel has mad it past allocation-HW2 = %d\n", x);
+        printk(KERN_INFO "Kernel: Driver dev_t successfully allocated. Return = %d\n", x);
 
 
 /** Print to kernel the my_device major and minor numbers of my_device. */
@@ -125,7 +132,7 @@ static int __init hello_init(void){
 /** Initialize char device: Void function  */
     cdev_init(&my_device.my_cdev, &mydev_fops);
 
-    printk(KERN_INFO "Hello, kernel has mad it past initialization-HW2 = %d\n", x);
+    printk(KERN_INFO "Kernel: cdev struct initialized. Return = %d\n", x);
 
 
 /** Add chard device to kernel fs   */
@@ -137,11 +144,11 @@ static int __init hello_init(void){
 		return -1;
     }
             
-    printk(KERN_INFO "Hello, kernel has been added-HW2 = %d\n", x);
+    printk(KERN_INFO "Kernel: cdev added with dev_t node. Return = %d\n", x);
 
     my_device.syscall_val = MYDEV_SYSCALL_VAL;
 
-    printk(KERN_INFO "Hello, kernel syscall_val = %d-HW2\n", my_device.syscall_val);
+    printk(KERN_INFO "Kernel: syscall_val = %d\n", my_device.syscall_val);
 
 
     return 0;
@@ -149,7 +156,7 @@ static int __init hello_init(void){
 
 /** Moduel exit */
 static void __exit hello_exit(void){
-    printk(KERN_INFO "Goodbye, kernel-HW2\n");
+    printk(KERN_INFO "Kernel: Goodby, driver deleted and unregistered.\n");
     
     /** Delete the initialized char device  */
     cdev_del(&my_device.my_cdev);

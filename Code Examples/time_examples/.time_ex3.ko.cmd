@@ -1,0 +1,1 @@
+cmd_/home/stoll/Documents/ECE373/time_examples/time_ex3.ko := ld -r -m elf_x86_64 -z max-page-size=0x200000 -T ./scripts/module-common.lds --build-id  -o /home/stoll/Documents/ECE373/time_examples/time_ex3.ko /home/stoll/Documents/ECE373/time_examples/time_ex3.o /home/stoll/Documents/ECE373/time_examples/time_ex3.mod.o ;  true

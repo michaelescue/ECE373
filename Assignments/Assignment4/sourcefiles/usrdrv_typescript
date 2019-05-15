@@ -1,0 +1,22 @@
+Script started on 2019-05-15 13:44:03-0700
+]0;root@michael-VirtualBox: ~/Documents/ECE373/Assignments/Assignment4/sourcefiles[01;32mroot@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/Assignment4/sourcefiles[00m#  ./ledmon.out -s 00:03.0 -L[C[C[C[14Pusdrv.out 
+Initial LEDCTL Register Value = 0xe
+GPRC Count = 1
+]0;root@michael-VirtualBox: ~/Documents/ECE373/Assignments/Assignment4/sourcefiles[01;32mroot@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/Assignment4/sourcefiles[00m#  ./usdrv.out 
+Initial LEDCTL Register Value = 0xe
+GPRC Count = 11
+]0;root@michael-VirtualBox: ~/Documents/ECE373/Assignments/Assignment4/sourcefiles[01;32mroot@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/Assignment4/sourcefiles[00m#  ./usdrv.out 
+Initial LEDCTL Register Value = 0xe
+GPRC Count = 0
+]0;root@michael-VirtualBox: ~/Documents/ECE373/Assignments/Assignment4/sourcefiles[01;32mroot@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/Assignment4/sourcefiles[00m#  ./usdrv.out 
+Initial LEDCTL Register Value = 0xe
+GPRC Count = 72
+]0;root@michael-VirtualBox: ~/Documents/ECE373/Assignments/Assignment4/sourcefiles[01;32mroot@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/Assignment4/sourcefiles[00m#  ./usdrv.out 
+Initial LEDCTL Register Value = 0xe
+GPRC Count = 10
+]0;root@michael-VirtualBox: ~/Documents/ECE373/Assignments/Assignment4/sourcefiles[01;32mroot@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/Assignment4/sourcefiles[00m#  ./usdrv.out 
+Initial LEDCTL Register Value = 0xe
+GPRC Count = 1
+]0;root@michael-VirtualBox: ~/Documents/ECE373/Assignments/Assignment4/sourcefiles[01;32mroot@michael-VirtualBox[00m:[01;34m~/Documents/ECE373/Assignments/Assignment4/sourcefiles[00m#  exit
+
+Script done on 2019-05-15 13:46:01-0700

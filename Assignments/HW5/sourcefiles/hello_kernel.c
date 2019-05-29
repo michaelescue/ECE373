@@ -22,6 +22,10 @@
 #include <linux/slab.h>
 #include <linux/uaccess.h>
 #include <linux/pci.h>
+#include <linux/timer.h>
+#include <linux/timekeeping.h>
+#include <linux/delay.h>
+#include <linux/jiffies.h>
 
 MODULE_LICENSE("Dual BSD/GPL");
 
@@ -30,11 +34,23 @@ MODULE_LICENSE("Dual BSD/GPL");
 #define MYDEV_SYSCALL_VAL 40
 #define BUF_SIZE 256
 #define NODENAME "hellokernel"
+#define LED0_ON 0xe
+#define LED0_OFF 0x4e
+#define LED1_ON 0xe00
+#define LED1_OFF 0x4e00
+#define LED2_ON 0xe0000
+#define LED2_OFF 0x4e0000
+#define LED3_ON 0xe000000
+#define LED3_OFF 0x4e000000
+#define LEDS_OFF (LED0_OFF | LED1_OFF | LED2_OFF | LED3_OFF)
 
 static int x = 0;
 static int blink_rate = 2;
-    module_param(blink_rate, int, 0644);
-
+module_param(blink_rate, int, 0644);
+static struct timer_list my_timer;
+static int open_close_status = 0;
+static int *kbuffer;
+static int on_off_state = 1;
 
 
 /** Function prototypes */
@@ -44,8 +60,9 @@ int fopen(struct inode *inode, struct file *file);
 int frelease(struct inode *inode, struct file *file);
 static int pci_blinkdriver_probe(struct pci_dev *pdev, const struct pci_device_id *ent);
 static void pci_blinkdriver_remove(struct pci_dev *pdev);
+static void my_callback(struct timer_list *list);
 
-/** Device structure: From example 4 by PJ Waskiewicz   */
+/* Device structure: From example 4 by PJ Waskiewicz   */
 static struct my_dev_struct {
 	struct cdev my_cdev;
 	dev_t device_node;
@@ -54,7 +71,7 @@ static struct my_dev_struct {
     struct class *my_class;
 } my_device;
 
-/** PCI structs from Apr 24 lecture */
+/* PCI structs from Apr 24 lecture */
 static const struct pci_device_id pci_blinkdrivertable[] = {
     { PCI_DEVICE(0x8086, 0x100e)},
     {},
@@ -72,7 +89,7 @@ static struct mypci {
     void *hw_addr;
 } mypci;
 
-/** File operations structure: From example 4 by PJ Waskiewicz */
+/* File operations structure: From example 4 by PJ Waskiewicz */
 static struct file_operations mydev_fops = {
 	.owner = THIS_MODULE,
     .write = wfile,
@@ -81,17 +98,42 @@ static struct file_operations mydev_fops = {
     .release = frelease,
 };
 
+/* Callback function for timer: From time_ex5.c example code */
+void my_callback(struct timer_list *list) {
+    struct timespec tm; 
+    tm = current_kernel_time();
+
+    if(open_close_status){
+
+        if(on_off_state){
+            writel(LED0_ON, mypci.hw_addr + 0xE00);
+            on_off_state = 0;
+        }
+        else{
+            writel(LED0_OFF, mypci.hw_addr + 0xE00);
+            on_off_state = 1;
+        }
+    }
+
+}
+
 int fopen(struct inode *inode, struct file *file){
     printk(KERN_INFO "Kernel:File Opened.\n");
+    
+    open_close_status = 1;
+
     return 0;
 }
 
 int frelease(struct inode *inode, struct file *file){
     printk(KERN_INFO "Kernel:File Closed.\n");
+    
+    open_close_status = 0;
+
     return 0;
 }
 
-/** PCI operations from Apr 24/29 lecture  */
+/* PCI operations from Apr 24/29 lecture  */
 
 static int pci_blinkdriver_probe(struct pci_dev *pdev, const struct pci_device_id *ent){
 
@@ -150,17 +192,16 @@ static void pci_blinkdriver_remove(struct pci_dev *pdev) {
     pci_release_selected_regions(pdev, pci_select_bars(pdev, IORESOURCE_MEM));
 }
 
-/** System call functions   */
+/* System call functions   */
 ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset){
     
     /* Read from device */
-    my_device.syscall_val = readl(mypci.hw_addr + 0xE00);
 
 	/*
 	*	_copy_to_user(void __user *to, const void *from, unsigned long n)
 	*/
 	
-    if(copy_to_user(buf, &my_device.syscall_val, len)){
+    if(copy_to_user(buf, &blink_rate, len)){
 	    printk(KERN_ERR "copy_to_user Error.\n");
         return -EFAULT;
     }
@@ -170,7 +211,7 @@ ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset){
 
 ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *offset){
 
-    int *kbuffer;
+
 
     if((kbuffer = kmalloc(len, GFP_KERNEL)) == NULL){
         printk(KERN_ERR "kmalloc Error.\n");
@@ -193,8 +234,16 @@ ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *off
 
     printk(KERN_INFO "Kernel: write syscall_val = %x\n", my_device.syscall_val);
 
-    /* Writing to device    */
-    writel(my_device.syscall_val, mypci.hw_addr + 0xE00);
+    /* Interpret written value  */
+    if(my_device.syscall_val > 0){
+        blink_rate = my_device.syscall_val;
+        mod_timer(&my_timer, jiffies + msecs_to_jiffies(1000*(1/blink_rate))); //Jiffies are equal to s (1/HZ)
+    }
+    else if(my_device.syscall_val == 0)
+        ;
+    else
+        return EINVAL;
+    
 
     kfree(kbuffer);    
 
@@ -205,7 +254,7 @@ ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *off
 static int __init hello_init(void){
     printk(KERN_INFO "Hello, kernel driver initializing.\n");
 
-/** Dynamically allocate the device file pointer.    */
+/* Dynamically allocate the device file pointer.    */
     if ((x = alloc_chrdev_region(&my_device.device_node, FIRSTMINOR,
         DEV_COUNT, "hellokernel"))) {
 		printk(KERN_ERR "Device allocation error.\n\t");
@@ -215,17 +264,17 @@ static int __init hello_init(void){
         printk(KERN_INFO "Kernel: Driver dev_t successfully allocated. Return = %d\n", x);
 
 
-/** Print to kernel the my_device major and minor numbers of my_device. */
+/* Print to kernel the my_device major and minor numbers of my_device. */
     printk(KERN_INFO "Major number: %d, Minor number: %d\n",
         MAJOR(my_device.device_node), MINOR(my_device.device_node));
 
-/** Initialize char device: Void function  */
+/* Initialize char device: Void function  */
     cdev_init(&my_device.my_cdev, &mydev_fops);
 
     printk(KERN_INFO "Kernel: cdev struct initialized. Return = %d\n", x);
 
 
-/** Add chard device to kernel fs   */
+/* Add chard device to kernel fs   */
     if((x = cdev_add(&my_device.my_cdev, my_device.device_node, DEV_COUNT))){
         printk(KERN_ERR "Char device add Error.\n\t");
         
@@ -254,16 +303,36 @@ static int __init hello_init(void){
             goto destroy_class;
         }
 
-    if((device_create(my_device.my_class, NULL, my_device.device_node, NULL, NODENAME)==NULL)){
+    printk(KERN_INFO "Class created successfully.\n");
+
+    if((device_create(my_device.my_class, NULL, my_device.device_node, NULL, NODENAME)) == NULL){
         printk(KERN_ERR "device_create failed\n");
         goto unreg_dev_create;
     }
 
+    printk(KERN_INFO "Node created successfully.\n");
 
+/* Create Timer: From time_ex5.c example code    */
+    struct timespec tm;
+    
+    tm = current_kernel_time();
+    timer_setup(&my_timer, my_callback, 0);
+    printk(KERN_INFO "Timer created successfully.\n");
+
+    mod_timer(&my_timer, jiffies + msecs_to_jiffies(1000*(1/blink_rate))); //Jiffies are equal to s (1/HZ)
+
+    printk(KERN_INFO "mod_timer executed successfully.\n");
+
+    printk(KERN_INFO "Timer initialized, turning leds off. \n");
+
+    /*Initialized LEDS to off   */
+    writel(LEDS_OFF, mypci.hw_addr + 0xE00);
+
+    
     return 0;
-
+/* Destroy structures on failure    */
     unreg_dev_create:
-        device_destroy(my_device.my_class, my_device.device_node);
+    device_destroy(my_device.my_class, my_device.device_node);
 
     destroy_class:
         class_destroy(my_device.my_class);
@@ -275,10 +344,12 @@ static int __init hello_init(void){
         return -1;
 }
 
-/** Module exit */
+/* Module exit */
 static void __exit hello_exit(void){
     printk(KERN_INFO "Kernel: Goodby, driver deleted and unregistered.\n");
-    
+/*  Delete Timer    */
+ del_timer(&my_timer);
+ printk(KERN_INFO "Timer deleted.\n");
 /* delete device node */
         device_destroy(my_device.my_class, my_device.device_node);
 
@@ -297,6 +368,7 @@ static void __exit hello_exit(void){
 
    // No return, void function;
 }
+
 
 module_init(hello_init);
 

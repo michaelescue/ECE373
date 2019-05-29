@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "stdint.h": "c",
+        "types.h": "c",
+        "pci.h": "c",
+        "pci_regs.h": "c"
+    }
+}

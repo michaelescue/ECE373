@@ -237,10 +237,13 @@ ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *off
     /* Interpret written value  */
     if(my_device.syscall_val > 0){
         blink_rate = my_device.syscall_val;
-        mod_timer(&my_timer, jiffies + msecs_to_jiffies(1000*(1/blink_rate))); //Jiffies are equal to s (1/HZ)
+        my_device.syscall_val = 1/blink_rate;
+        my_device.syscall_val = my_device.syscall_val * 1000;
+        mod_timer(&my_timer, jiffies + msecs_to_jiffies((unsigned int) my_device.syscall_val)); //Jiffies are equal to s (1/HZ)
+        printk(KERN_INFO " Timer blink-rate updated.\n");
     }
     else if(my_device.syscall_val == 0)
-        ;
+    printk(KERN_INFO "No update to blink-rate (0)\n");
     else
         return EINVAL;
     
@@ -319,8 +322,9 @@ static int __init hello_init(void){
     timer_setup(&my_timer, my_callback, 0);
     printk(KERN_INFO "Timer created successfully.\n");
 
-    mod_timer(&my_timer, jiffies + msecs_to_jiffies(1000*(1/blink_rate))); //Jiffies are equal to s (1/HZ)
-
+    my_device.syscall_val = 1/blink_rate;
+    my_device.syscall_val = my_device.syscall_val * 1000;
+    mod_timer(&my_timer, jiffies + msecs_to_jiffies((unsigned int) my_device.syscall_val)); //Jiffies are equal to s (1/HZ)
     printk(KERN_INFO "mod_timer executed successfully.\n");
 
     printk(KERN_INFO "Timer initialized, turning leds off. \n");

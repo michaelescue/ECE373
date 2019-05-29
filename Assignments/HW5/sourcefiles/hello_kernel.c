@@ -14,6 +14,7 @@
  *  -   From Lecture 06 - Driver Intro - part 2 - cross compile hints
 */
 #include <linux/module.h>
+#include <linux/moduleparam.h>
 #include <linux/types.h>
 #include <linux/kdev_t.h>
 #include <linux/fs.h>
@@ -28,21 +29,20 @@ MODULE_LICENSE("Dual BSD/GPL");
 #define DEV_COUNT 1
 #define MYDEV_SYSCALL_VAL 40
 #define BUF_SIZE 256
+#define NODENAME "hellokernel"
 
 static int x = 0;
+static int blink_rate = 2;
+    module_param(blink_rate, int, 0);
+
 
 
 /** Function prototypes */
 ssize_t rfile(struct file *file, char __user *buf, size_t len, loff_t *offset);
-
 ssize_t wfile(struct file *file, const char __user *buf, size_t len, loff_t *offset);
-
 int fopen(struct inode *inode, struct file *file);
-
 int frelease(struct inode *inode, struct file *file);
-
 static int pci_blinkdriver_probe(struct pci_dev *pdev, const struct pci_device_id *ent);
-
 static void pci_blinkdriver_remove(struct pci_dev *pdev);
 
 /** Device structure: From example 4 by PJ Waskiewicz   */
@@ -51,6 +51,7 @@ static struct my_dev_struct {
 	dev_t device_node;
     unsigned int syscall_val;
     long led_initial_val;
+    struct class *my_class;
 } my_device;
 
 /** PCI structs from Apr 24 lecture */
@@ -246,7 +247,26 @@ static int __init hello_init(void){
 
     printk(KERN_INFO "Kernel: syscall_val = %d\n", my_device.syscall_val);
 
+    /* Create node */
+    if((my_device.my_class = class_create(THIS_MODULE, "hellokernel")) == NULL)
+        {
+            printk(KERN_ERR "Class_create failed!\n");
+            goto destroy_class;
+        }
+
+    if((device_create(my_device.my_class, NULL, my_device.device_node, NULL, NODENAME)==NULL)){
+        printk(KERN_ERR "device_create failed\n");
+        goto unreg_dev_create;
+    }
+
+
     return 0;
+
+    unreg_dev_create:
+        device_destroy(my_device.my_class, my_device.device_node);
+
+    destroy_class:
+        class_destroy(my_device.my_class);
 
     unreg_pci_driver:
         pci_unregister_driver(&pci_blinkdriver);
@@ -259,6 +279,12 @@ static int __init hello_init(void){
 static void __exit hello_exit(void){
     printk(KERN_INFO "Kernel: Goodby, driver deleted and unregistered.\n");
     
+/* delete device node */
+        device_destroy(my_device.my_class, my_device.device_node);
+
+/* Destroy class */
+        class_destroy(my_device.my_class);
+
     /** Delete the initialized char device  */
     cdev_del(&my_device.my_cdev);
 

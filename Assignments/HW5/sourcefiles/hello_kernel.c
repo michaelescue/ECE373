@@ -33,7 +33,7 @@ MODULE_LICENSE("Dual BSD/GPL");
 
 static int x = 0;
 static int blink_rate = 2;
-    module_param(blink_rate, int, 0);
+    module_param(blink_rate, int, 0644);
 
 
 

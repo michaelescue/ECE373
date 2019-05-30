@@ -45,8 +45,7 @@ int main(void) {
     //printf("POST SYSCALL OPEN\n");
 
 /* Read file    */
-    printf("Ready to read. Press enter.\n");
-    getchar();
+
     if ((read(fd, buf, sizeof(int))) == -1) {
         perror("Error on read.");
         return -1;
@@ -61,7 +60,7 @@ int main(void) {
 
    // printf("sys_call_val write val= %x, size of = %ld\n", sys_call_val, sizeof(sys_call_val));
 
-/* Write to file    */
+/* Write to file    
     printf("enter integer value:");
     scanf("%d", &sys_call_val);
     getchar();
@@ -70,8 +69,10 @@ int main(void) {
         perror("Error on write.");
         return -1;
     }
+*/
 
-    sleep(2);
+for(int i = 0; i< 10000; i++)
+    printf("i%d", i);
 
 /* Close file   */
     if (close(fd) == -1) {

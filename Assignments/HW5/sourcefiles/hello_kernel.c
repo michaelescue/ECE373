@@ -61,7 +61,9 @@ int fopen(struct inode *inode, struct file *file);
 int frelease(struct inode *inode, struct file *file);
 static int pci_blinkdriver_probe(struct pci_dev *pdev, const struct pci_device_id *ent);
 static void pci_blinkdriver_remove(struct pci_dev *pdev);
-static void my_callback(struct timer_list *list);
+static void my_callback(struct timer_list *list); 
+
+
 static struct timespec tm;
 static struct class *my_class;
 
@@ -101,13 +103,15 @@ static struct file_operations mydev_fops = {
     .release = frelease,
 };
 
+/*************************************************************************/
+
 /* Callback function for timer: From time_ex5.c example code */
-void my_callback(struct timer_list *list) {
-    struct timespec tm; 
-    tm = current_kernel_time();
+static void my_callback(struct timer_list *list) {
 
+    printk("callback entered\n");
+
+    /* THis section of code causes the driver to crash on timer expirations.
     if(open_close_status){
-
         if(on_off_state){
             writel(LED0_ON, mypci.hw_addr + 0xE00);
             on_off_state = 0;
@@ -116,7 +120,24 @@ void my_callback(struct timer_list *list) {
             writel(LED0_OFF, mypci.hw_addr + 0xE00);
             on_off_state = 1;
         }
-    }
+    */
+    //mod_timer(&my_timer, jiffies + msecs_to_jiffies(my_device.syscall_val)); //Jiffies are equal to s (1/HZ)*/
+    printk("callback exit\n");
+
+} 
+
+void timer_init(void){
+/* Create Timer: From time_ex5.c example code  */  
+    
+    tm = current_kernel_time();
+    timer_setup(&my_timer, my_callback, 0);
+    printk(KERN_INFO "Timer created successfully.\n");
+
+    my_device.syscall_val = 1/blink_rate;
+    printk("1/blinkrate = %d\n", (1/blink_rate));
+    my_device.syscall_val = my_device.syscall_val * 1000;
+    mod_timer(&my_timer, jiffies + msecs_to_jiffies(my_device.syscall_val)); //Jiffies are equal to s (1/HZ)
+    printk(KERN_INFO "mod_timer executed successfully.\n");
 
 }
 
@@ -280,7 +301,7 @@ static int __init hello_init(void){
     printk(KERN_INFO "Kernel: cdev struct initialized. Return = %d\n", x);
 
 
-/* Add chard device to kernel fs   */
+/* Add chard device to kernel fs   */   
     if((x = cdev_add(&my_device.my_cdev, my_device.device_node, DEV_COUNT))){
         printk(KERN_ERR "Char device add Error.\n\t");
         
@@ -290,7 +311,6 @@ static int __init hello_init(void){
     }
 
 /* register driver as pci   */
-
    if(pci_register_driver(&pci_blinkdriver)){
         printk(KERN_ERR "pci register failed.\n");
         goto unreg_pci_driver;
@@ -301,23 +321,6 @@ static int __init hello_init(void){
     my_device.syscall_val = MYDEV_SYSCALL_VAL;
 
     printk(KERN_INFO "Kernel: syscall_val = %d\n", my_device.syscall_val);
-
-    /* Create Timer: From time_ex5.c example code    */
-    
-    tm = current_kernel_time();
-    timer_setup(&my_timer, my_callback, 0);
-    printk(KERN_INFO "Timer created successfully.\n");
-
-    my_device.syscall_val = 1/blink_rate;
-    my_device.syscall_val = my_device.syscall_val * 1000;
-    mod_timer(&my_timer, jiffies + msecs_to_jiffies((unsigned int) my_device.syscall_val)); //Jiffies are equal to s (1/HZ)
-    printk(KERN_INFO "mod_timer executed successfully.\n");
-
-    printk(KERN_INFO "Timer initialized, turning leds off. \n");
-
-    /*Initialized LEDS to off   */
-    writel(LEDS_OFF, mypci.hw_addr + 0xE00);
-
     
     /* Create node */
     if((my_class = class_create(THIS_MODULE, "hellokernel")) == NULL){
@@ -334,7 +337,12 @@ static int __init hello_init(void){
 
     printk(KERN_INFO "Node created successfully.\n");
 
+ /* Timer init   */
+    timer_init();
+ 
  return 0;
+
+
 
 /* Destroy structures on failure    */
     unreg_dev_create:

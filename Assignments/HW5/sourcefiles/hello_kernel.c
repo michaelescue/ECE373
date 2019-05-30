@@ -26,6 +26,7 @@
 #include <linux/timekeeping.h>
 #include <linux/delay.h>
 #include <linux/jiffies.h>
+#include <linux/err.h>
 
 MODULE_LICENSE("Dual BSD/GPL");
 
@@ -61,6 +62,9 @@ int frelease(struct inode *inode, struct file *file);
 static int pci_blinkdriver_probe(struct pci_dev *pdev, const struct pci_device_id *ent);
 static void pci_blinkdriver_remove(struct pci_dev *pdev);
 static void my_callback(struct timer_list *list);
+static struct timespec tm;
+static struct class *my_class;
+
 
 /* Device structure: From example 4 by PJ Waskiewicz   */
 static struct my_dev_struct {
@@ -68,7 +72,6 @@ static struct my_dev_struct {
 	dev_t device_node;
     unsigned int syscall_val;
     long led_initial_val;
-    struct class *my_class;
 } my_device;
 
 /* PCI structs from Apr 24 lecture */
@@ -299,24 +302,7 @@ static int __init hello_init(void){
 
     printk(KERN_INFO "Kernel: syscall_val = %d\n", my_device.syscall_val);
 
-    /* Create node */
-    if((my_device.my_class = class_create(THIS_MODULE, "hellokernel")) == NULL)
-        {
-            printk(KERN_ERR "Class_create failed!\n");
-            goto destroy_class;
-        }
-
-    printk(KERN_INFO "Class created successfully.\n");
-
-    if((device_create(my_device.my_class, NULL, my_device.device_node, NULL, NODENAME)) == NULL){
-        printk(KERN_ERR "device_create failed\n");
-        goto unreg_dev_create;
-    }
-
-    printk(KERN_INFO "Node created successfully.\n");
-
-/* Create Timer: From time_ex5.c example code    */
-    struct timespec tm;
+    /* Create Timer: From time_ex5.c example code    */
     
     tm = current_kernel_time();
     timer_setup(&my_timer, my_callback, 0);
@@ -333,19 +319,35 @@ static int __init hello_init(void){
     writel(LEDS_OFF, mypci.hw_addr + 0xE00);
 
     
-    return 0;
+    /* Create node */
+    if((my_class = class_create(THIS_MODULE, "hellokernel")) == NULL){
+            printk(KERN_ERR "Class_create failed!\n");
+            goto destroy_class;
+        }
+
+    printk(KERN_INFO "Class created successfully.\n");
+
+    if((device_create(my_class, NULL, my_device.device_node, NULL, NODENAME)) == NULL){
+        printk(KERN_ERR "device_create failed\n");
+        goto unreg_dev_create;
+    }
+
+    printk(KERN_INFO "Node created successfully.\n");
+
+ return 0;
+
 /* Destroy structures on failure    */
     unreg_dev_create:
-    device_destroy(my_device.my_class, my_device.device_node);
+    device_destroy(my_class, my_device.device_node);
 
     destroy_class:
-        class_destroy(my_device.my_class);
+        class_destroy(my_class);
 
     unreg_pci_driver:
         pci_unregister_driver(&pci_blinkdriver);
-
         unregister_chrdev_region(my_device.device_node, DEV_COUNT);
-        return -1;
+    
+    return -1;
 }
 
 /* Module exit */
@@ -355,10 +357,10 @@ static void __exit hello_exit(void){
  del_timer(&my_timer);
  printk(KERN_INFO "Timer deleted.\n");
 /* delete device node */
-        device_destroy(my_device.my_class, my_device.device_node);
+        device_destroy(my_class, my_device.device_node);
 
 /* Destroy class */
-        class_destroy(my_device.my_class);
+        class_destroy(my_class);
 
     /** Delete the initialized char device  */
     cdev_del(&my_device.my_cdev);

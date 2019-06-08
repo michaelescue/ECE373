@@ -32,7 +32,7 @@ Requires:
 
 - An Interrupt handler.
 	> Tied to the legacy interrupt source
-	
+
 - A workqueue THREAD to handle deferred processing from the interrupt.
 
 - Config code to put the chip into promiscuous mode.
@@ -43,10 +43,11 @@ Requires:
 	> lower 8 bits will be the value of the receive queue TAIL
 	> upper 8 bits will be the value of the receive queue HEAD
 	
+- Driver loads with LED2 on at start once loaded.
+	
 ***Reference the e1000e driver for chip initialization
 
-*****************************************************************************
-**Steps to success**********************************************************
+***************************STEPS TO TAKE******************************
 
 Step 1: Create a function that;
 	Adds and allocates the descriptors
@@ -56,6 +57,11 @@ Step 1: Create a function that;
 	
 Step 2:
 	Add the interrupt hadler.
+		> Inside the interrupt handler 
+			+ turn LED0 on.
+			+ Submit a workqueue thread to run
+			+ re-arm the interrupt then return from interrupt.
+		
 	Hook the interrupt with request_irq().
 	
 	-  Check /proc/interrupts
@@ -64,6 +70,11 @@ Step 2:
 		
 Step 3: 
 	Add the workqueue thread.
+		> Sleep for 0.5 seconds
+		> Turn off LED0
+		> bump TAIL when done.
+		> if TAIL is an odd number, turn on LED1, else turn it off.
+		
 	Invoke from the interrupt handler.
 	
 Step 4:
@@ -76,9 +87,10 @@ Step 4:
 Step 5:
 	Add a mechanism for re-arming the interrupt before exiting the handler.
 	
-*/
-
-
-/* Link side
-
+Step 6:
+	Ensure your driver code properly tears down the interrupt.
+		> Unpin all descriptor memory.
+		> Free all memory
+		> cleanly exit.
 	
+*/

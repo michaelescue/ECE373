@@ -157,7 +157,56 @@ ECE 373
 	Leaf directories which have the modules of that depenency, there will be no Kconfig file.
 	
 	
+*/
 	
+// Make config options
+
+/*
+
+	configuration targets:
+	-	oldefconfig
+		>	This is the one you want to use for hw.
+	-	yesconfig
+		>	Builds all modules into the kernel.
+	-	modconfig
+		>	All tri-state modules are built as modules.
+		
+*/
+
+// Building and booting a kernel
+
+/*
+
+	GRUB
+	-	Grand Unified Bootloader
+	-	Has its own drivers.
+	-	Loads drivers to get disk online to uncompress and start running kernel.
 	
+	$ make
 	
+	$ make modules_install
 	
+	$ make installing
+	
+	vmlinuz
+	
+	vmlinux
+	-	Stripped compressed version of vmlinuz
+	
+*/
+
+// Generate Config
+
+/*
+	As long as /root has files
+	
+	$ grub-mkconfig
+*/
+
+// make -j <#oflogical processors> + 1
+
+/*
+	This will speedup build
+
+*/
+

@@ -337,7 +337,7 @@ static int __init hello_init(void){
 
     printk(KERN_INFO "Node created successfully.\n");
 
- /* Timer init   */
+/* Timer init   */
     timer_init();
  
  return 0;

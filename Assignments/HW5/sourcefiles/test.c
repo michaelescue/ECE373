@@ -71,9 +71,12 @@ int main(void) {
     }
 */
 
-for(int i = 0; i< 10000; i++)
-    printf("i%d", i);
+for(int i = 0; i< 10; i++)
+    printf("loop#%d\n", i);
 
+/* Wait to close. */
+    printf("Enter anything to close:");
+    getchar();
 /* Close file   */
     if (close(fd) == -1) {
             perror("Error on close.");

@@ -109,8 +109,7 @@ static struct file_operations mydev_fops = {
 static void my_callback(struct timer_list *list) {
 
     printk("callback entered\n");
-    del_timer_sync(&my_timer);
-    /* THis section of code causes the driver to crash on timer expirations.*/
+    /* THis section of code causes the driver to crash on timer expirations.
     if(open_close_status){
         if(on_off_state){
             writel(LED0_ON, mypci.hw_addr + 0xE00);
@@ -122,10 +121,10 @@ static void my_callback(struct timer_list *list) {
         }
     }
     //*/
-    mod_timer(&my_timer, jiffies + msecs_to_jiffies(my_device.syscall_val)); //Jiffies are equal to s (1/HZ)*/
+    //mod_timer(&my_timer, jiffies + msecs_to_jiffies(my_device.syscall_val)); //Jiffies are equal to s (1/HZ)*/
     printk("callback exit\n");
 
-} 
+}
 
 void timer_init(void){
 /* Create Timer: From time_ex5.c example code  */  
@@ -133,9 +132,8 @@ void timer_init(void){
     timer_setup(&my_timer, my_callback, 0);
     printk(KERN_INFO "Timer created successfully.\n");
 
-    my_device.syscall_val = 1/blink_rate;
-    printk("1/blinkrate = %d\n", (1/blink_rate));
-    my_device.syscall_val = my_device.syscall_val * 1000;
+    my_device.syscall_val = 1000/blink_rate;
+    printk("1/blinkrate = %d\n", my_device.syscall_val );
     mod_timer(&my_timer, jiffies + msecs_to_jiffies(my_device.syscall_val)); //Jiffies are equal to s (1/HZ)
     printk(KERN_INFO "mod_timer executed successfully.\n");
 
@@ -155,7 +153,8 @@ int frelease(struct inode *inode, struct file *file){
     printk(KERN_INFO "Kernel:File Closed.\n");
     
     open_close_status = 0;
-
+/* Delete timer */
+    del_timer_sync(&my_timer);
     return 0;
 }
 

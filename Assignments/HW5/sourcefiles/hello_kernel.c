@@ -24,6 +24,7 @@
 #include <linux/pci.h>
 #include <linux/timer.h>
 #include <linux/timekeeping.h>
+#include <linux/time.h>
 #include <linux/delay.h>
 #include <linux/jiffies.h>
 #include <linux/err.h>
@@ -64,7 +65,6 @@ static void pci_blinkdriver_remove(struct pci_dev *pdev);
 static void my_callback(struct timer_list *list); 
 
 
-static struct timespec tm;
 static struct class *my_class;
 
 
@@ -109,8 +109,8 @@ static struct file_operations mydev_fops = {
 static void my_callback(struct timer_list *list) {
 
     printk("callback entered\n");
-
-    /* THis section of code causes the driver to crash on timer expirations.
+    del_timer_sync(&my_timer);
+    /* THis section of code causes the driver to crash on timer expirations.*/
     if(open_close_status){
         if(on_off_state){
             writel(LED0_ON, mypci.hw_addr + 0xE00);
@@ -120,8 +120,9 @@ static void my_callback(struct timer_list *list) {
             writel(LED0_OFF, mypci.hw_addr + 0xE00);
             on_off_state = 1;
         }
-    */
-    //mod_timer(&my_timer, jiffies + msecs_to_jiffies(my_device.syscall_val)); //Jiffies are equal to s (1/HZ)*/
+    }
+    //*/
+    mod_timer(&my_timer, jiffies + msecs_to_jiffies(my_device.syscall_val)); //Jiffies are equal to s (1/HZ)*/
     printk("callback exit\n");
 
 } 
@@ -129,7 +130,6 @@ static void my_callback(struct timer_list *list) {
 void timer_init(void){
 /* Create Timer: From time_ex5.c example code  */  
     
-    tm = current_kernel_time();
     timer_setup(&my_timer, my_callback, 0);
     printk(KERN_INFO "Timer created successfully.\n");
 
@@ -143,7 +143,9 @@ void timer_init(void){
 
 int fopen(struct inode *inode, struct file *file){
     printk(KERN_INFO "Kernel:File Opened.\n");
-    
+/* Timer init   */
+    timer_init();
+/* Toggle ON "open/close" status. */
     open_close_status = 1;
 
     return 0;
@@ -337,9 +339,8 @@ static int __init hello_init(void){
 
     printk(KERN_INFO "Node created successfully.\n");
 
-/* Timer init   */
-    timer_init();
- 
+
+/* return on success. */
  return 0;
 
 

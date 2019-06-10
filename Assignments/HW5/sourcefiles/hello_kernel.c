@@ -121,7 +121,7 @@ static void my_callback(struct timer_list *list) {
         }
     }
     //*/
-    //mod_timer(&my_timer, jiffies + msecs_to_jiffies(my_device.syscall_val)); //Jiffies are equal to s (1/HZ)*/
+    mod_timer(&my_timer, jiffies + msecs_to_jiffies(my_device.syscall_val)); //Jiffies are equal to s (1/HZ)*/
     printk("callback exit\n");
 
 }

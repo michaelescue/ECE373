@@ -110,7 +110,7 @@ static void my_callback(struct timer_list *list) {
 
     printk("callback entered\n");
     /* THis section of code causes the driver to crash on timer expirations.
-    if(open_close_status){
+    */if(open_close_status){
         if(on_off_state){
             writel(LED0_ON, mypci.hw_addr + 0xE00);
             on_off_state = 0;

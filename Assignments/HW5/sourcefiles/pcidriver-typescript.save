@@ -1,107 +1,0 @@
-Script started on 2019-05-01 14:48:16-0700
-]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# /[K./install.sh 
-make -C /lib/modules/4.18.0-17-generic/build SUBDIRS=/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles clean 
-make[1]: Entering directory '/usr/src/linux-headers-4.18.0-17-generic'
-make[1]: Leaving directory '/usr/src/linux-headers-4.18.0-17-generic'
-rm test.out
-rm: cannot remove 'test.out': No such file or directory
-Makefile:31: recipe for target 'clean' failed
-make: *** [clean] Error 1
-gcc -c ledmon.c
-gcc -c test.c 
-make -C /lib/modules/4.18.0-17-generic/build SUBDIRS=/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles modules
-make[1]: Entering directory '/usr/src/linux-headers-4.18.0-17-generic'
-  CC [M]  /home/michael/Documents/ECE373/Assignments/HW3/sourcefiles/hello_kernel.o
-  Building modules, stage 2.
-  MODPOST 1 modules
-  CC      /home/michael/Documents/ECE373/Assignments/HW3/sourcefiles/hello_kernel.mod.o
-  LD [M]  /home/michael/Documents/ECE373/Assignments/HW3/sourcefiles/hello_kernel.ko
-make[1]: Leaving directory '/usr/src/linux-headers-4.18.0-17-generic'
-gcc -s test.o -o test.out
-gcc -s ledmon.o -o ledmon.out
-]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# ./test.[K[K[K[K[K[K[Kl[Klsc[Kpci -v | grep  30.0[K[K[K[K03.0[K[K[K[K00:03.0
-[01;31m[K00:03.0[m[K Ethernet controller: Intel Corporation 82540EM Gigabit Ethernet Controller (rev 02)
-]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# lspci -v | grep  00:03.0 - 7
-[35m[K(standard input)[m[K[36m[K:[m[K[01;31m[K00:03.0[m[K Ethernet controller: Intel Corporation 82540EM Gigabit Ethernet Controller (rev 02)
-grep: 7: No such file or directory
-]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# lspci -v | grep  00:03.0 - 7[K[K7	I/O ports at d010 [size=16]
-	Memory at f0000000 (32-bit, non-prefetchable) [size=128M]
-	Memory at f8000000 (32-bit, non-prefetchable) [size=2M]
-	[virtual] Expansion ROM at 000c0000 [disabled] [size=128K]
-	Kernel driver in use: vmwgfx
-	Kernel modules: vmwgfx
-
-[01;31m[K00:03.0[m[K Ethernet controller: Intel Corporation 82540EM Gigabit Ethernet Controller (rev 02)
-	Subsystem: Intel Corporation PRO/1000 MT Desktop Adapter
-	Flags: 66MHz, medium devsel, IRQ 19
-	Memory at f8200000 (32-bit, non-prefetchable) [size=128K]
-	I/O ports at d020 [size=8]
-	Capabilities: [dc] Power Management version 2
-	Capabilities: [e4] PCI-X non-bridge device
-	Kernel driver in use: blinkdriver
-]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# ./test.out 
-LEDCTL = 0x7068302
-]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# ./[K[Kdmesg |tai[K[K[K tail -1 [A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K
-[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C1 5
-[ 4013.085356] Hello, kernel driver initializing.
-[ 4013.085358] Kernel: Driver dev_t successfully allocated. Return = 0
-[ 4013.085359] Major number: 241, Minor number: 1
-[ 4013.085359] Kernel: cdev struct initialized. Return = 0
-[ 4013.085372] Blink driver probe called.
-[ 4013.085372] barmask 1
-[ 4013.085374] mmio start: f8200000
-[ 4013.085374] mmio len: 20000
-[ 4013.085429] initial val is 7068302
-[ 4013.091894] Kernel: cdev added with dev_t node. Return = 0
-[ 4013.091895] Kernel: syscall_val = 40
-[ 4055.639898] Kernel:File Opened.
-[ 4055.639990] Kernel: write syscall_val = e
-[ 4057.640356] Kernel: write syscall_val = 0
-[ 4057.640481] Kernel:File Closed.
-]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# ./clean.sh 
-make -C /lib/modules/4.18.0-17-generic/build SUBDIRS=/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles clean 
-make[1]: Entering directory '/usr/src/linux-headers-4.18.0-17-generic'
-  CLEAN   /home/michael/Documents/ECE373/Assignments/HW3/sourcefiles/.tmp_versions
-  CLEAN   /home/michael/Documents/ECE373/Assignments/HW3/sourcefiles/Module.symvers
-make[1]: Leaving directory '/usr/src/linux-headers-4.18.0-17-generic'
-rm test.out
-rm ledmon.out
-./clean.sh: line 6: echo: write error: No such device
-]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# ls pci[K[K[K[Kpci | grep 00 :03.0 - 9
-[35m[K(standard input)[m[K[36m[K:[m[K[01;31m[K00:03.0[m[K Ethernet controller: Intel Corporation 82540EM Gigabit Ethernet Controller (rev 02)
-grep: 9: No such file or directory
-]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# lspci | grep 00::03.0 - 9[1P9
-00:00.0 Host bridge: Intel Corporation 440FX - 82441FX PMC [Natoma] (rev 02)
-00:01.0 ISA bridge: Intel Corporation 82371SB PIIX3 ISA [Natoma/Triton II]
-00:01.1 IDE interface: Intel Corporation 82371AB/EB/MB PIIX4 IDE (rev 01)
-00:02.0 VGA compatible controller: VMware SVGA II Adapter
-[01;31m[K00:03.0[m[K Ethernet controller: Intel Corporation 82540EM Gigabit Ethernet Controller (rev 02)
-00:04.0 System peripheral: InnoTek Systemberatung GmbH VirtualBox Guest Service
-00:05.0 Multimedia audio controller: Intel Corporation 82801AA AC'97 Audio Controller (rev 01)
-00:06.0 USB controller: Apple Inc. KeyLargo/Intrepid USB
-00:07.0 Bridge: Intel Corporation 82371AB/EB/MB PIIX4 ACPI (rev 08)
-00:0d.0 SATA controller: Intel Corporation 82801HM/HEM (ICH8M/ICH8M-E) SATA Controller [AHCI mode] (rev 02)
-]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# lspci | grep 00::03.0 -9[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C| grep 00:0[1P[A]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# [C[C[C[C[C-| grep 00:[1@0[A]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# [C[C[C[C[C[C| grep 00:0[1P[A]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# [C[C[C[C[C | grep 00:[1@0[A]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# [C[C[C[C[C[C-| grep 00[1@:[A]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# [C[C[C[C[C[C[Cv| grep 0[1@0[A]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# [C[C[C[C[C[C[C[C | grep [C[1@0[A]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# [C[C[C[C[C[C[C[C[C
-
-	Subsystem: VMware SVGA II Adapter
-	Flags: bus master, fast devsel, latency 64, IRQ 18
-	I/O ports at d010 [size=16]
-	Memory at f0000000 (32-bit, non-prefetchable) [size=128M]
-	Memory at f8000000 (32-bit, non-prefetchable) [size=2M]
-	[virtual] Expansion ROM at 000c0000 [disabled] [size=128K]
-	Kernel driver in use: vmwgfx
-	Kernel modules: vmwgfx
-
-[01;31m[K00:03.0[m[K Ethernet controller: Intel Corporation 82540EM Gigabit Ethernet Controller (rev 02)
-	Subsystem: Intel Corporation PRO/1000 MT Desktop Adapter
-	Flags: bus master, 66MHz, medium devsel, latency 64, IRQ 19
-	Memory at f8200000 (32-bit, non-prefetchable) [size=128K]
-	I/O ports at d020 [size=8]
-	Capabilities: [dc] Power Management version 2
-	Capabilities: [e4] PCI-X non-bridge device
-	Kernel driver in use: e1000
-	Kernel modules: e1000
-
-]0;root@michael-VirtualBox: /home/michael/Documents/ECE373/Assignments/HW3/sourcefilesroot@michael-VirtualBox:/home/michael/Documents/ECE373/Assignments/HW3/sourcefiles# exit
-
-Script done on 2019-05-01 14:50:22-0700
